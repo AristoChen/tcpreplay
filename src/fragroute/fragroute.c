@@ -53,7 +53,7 @@ fragroute_process(fragroute_t *ctx, void *buf, size_t len)
     struct pkt *pkt;
     assert(ctx);
     assert(buf);
-    
+
     ctx->first_packet = 0;
     /* save the l2 header of the original packet for later */
     ctx->l2len = get_l2len(buf, len, ctx->dlt);
@@ -103,18 +103,18 @@ fragroute_getfragment(fragroute_t *ctx, char **packet)
     static struct pkt *next = NULL;
     char *pkt_data = *packet;
     u_int32_t length;
-    
+
     if (ctx->first_packet != 0) {
         pkt = next;
     } else {
         ctx->first_packet = 1;
         pkt = TAILQ_FIRST(ctx->pktq);
     }
-    
+
     if (pkt != TAILQ_END(&(ctx->pktq))) {
         next = TAILQ_NEXT(pkt, pkt_next);
         memcpy(pkt_data, pkt->pkt_data, pkt->pkt_end - pkt->pkt_data);
-        
+
         /* return the original L2 header */
         memcpy(pkt_data, ctx->l2header, ctx->l2len);
         length = pkt->pkt_end - pkt->pkt_data;
@@ -134,7 +134,7 @@ fragroute_init(const int mtu, const int dlt, const char *config, char *errbuf)
         sprintf(errbuf, "Fragroute only supports DLT_EN10MB pcap files");
         return NULL;
     }
-        
+
 
     ctx = (fragroute_t *)safe_malloc(sizeof(fragroute_t));
     ctx->pktq = (struct pktq *)safe_malloc(sizeof(struct pktq));

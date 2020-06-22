@@ -44,9 +44,9 @@ struct tcprewrite_opt_s {
     /* tcpprep cache data */
     COUNTER cache_packets;
     char *cachedata;
- 
+
     /* tcpprep cache file comment */
-    char *comment; 
+    char *comment;
 
 #ifdef ENABLE_VERBOSE
     /* tcpdump verbose printing */

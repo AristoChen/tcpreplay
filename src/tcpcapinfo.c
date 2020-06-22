@@ -244,8 +244,8 @@ main(int argc, char *argv[])
                     pcap_patched_ph.protocol = SWAPSHORT(pcap_patched_ph.protocol);
                 }
                 printf("%"PRIu64"\t%4"PRIu32"\t\t%4"PRIu32"\t\t%"
-                        PRIx32".%"PRIx32"\t\t%4"PRIu32"\t%4hu\t%4hhu", 
-                        pktcnt, pcap_patched_ph.len, pcap_patched_ph.caplen, 
+                        PRIx32".%"PRIx32"\t\t%4"PRIu32"\t%4hu\t%4hhu",
+                        pktcnt, pcap_patched_ph.len, pcap_patched_ph.caplen,
                         pcap_patched_ph.ts.tv_sec, pcap_patched_ph.ts.tv_usec,
                         pcap_patched_ph.index, pcap_patched_ph.protocol, pcap_patched_ph.pkt_type);
 
@@ -273,7 +273,7 @@ main(int argc, char *argv[])
                 }
                 printf("%"PRIu64"\t%4"PRIu32"\t\t%4"PRIu32"\t\t%"
                         PRIx32".%"PRIx32,
-                        pktcnt, pcap_ph.len, pcap_ph.caplen, 
+                        pktcnt, pcap_ph.len, pcap_ph.caplen,
                         (unsigned int)pcap_ph.ts.tv_sec, (unsigned int)pcap_ph.ts.tv_usec);
                 if (pcap_fh.snaplen < pcap_ph.caplen || pcap_ph.caplen > MAX_SNAPLEN) {
                     caplentoobig = 1;
@@ -292,8 +292,8 @@ main(int argc, char *argv[])
 
             /* check to make sure timestamps don't go backwards */
             if (last_sec > 0 && last_usec > 0) {
-                if ((pcap_ph.ts.tv_sec == last_sec) ? 
-                        (pcap_ph.ts.tv_usec < last_usec) : 
+                if ((pcap_ph.ts.tv_sec == last_sec) ?
+                        (pcap_ph.ts.tv_usec < last_usec) :
                         (pcap_ph.ts.tv_sec < last_sec)) {
                     backwards = 1;
                 }
@@ -331,7 +331,7 @@ main(int argc, char *argv[])
                 printf("TOOBIG\n");
             } else if (backwards && caplentoobig) {
                 printf("BAD_TS|TOOBIG");
-            } 
+            }
         }
     }
 

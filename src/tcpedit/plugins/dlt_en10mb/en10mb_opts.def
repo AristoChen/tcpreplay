@@ -28,7 +28,7 @@ flag = {
 Takes a pair of comma deliminated ethernet MAC addresses which
 will replace the source MAC address of outbound packets.
 The first MAC address will be used for the server to client traffic
-and the optional second MAC address will be used for the client 
+and the optional second MAC address will be used for the client
 to server traffic.
 
 Example:

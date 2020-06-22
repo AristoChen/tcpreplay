@@ -17,7 +17,7 @@ are then read using libpcap/BPF filter processed according to the fragroute
 rule set and then resent out the configured interface.
 
 libfragroute works differently.  First, we do away with any changes to the
-host routing table.  Secondly, packets are not sent out any interface, but 
+host routing table.  Secondly, packets are not sent out any interface, but
 are read back by the caller.  The API should look something like this:
 
 ctx = fragroute_init(mtu, <rules>); // init library

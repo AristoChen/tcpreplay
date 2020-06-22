@@ -150,7 +150,7 @@ mod_open(const char *script, char *errbuf)
     /* close the file */
     fclose(fp);
     dbg(1, "close file...");
-    
+
     if (ret == 0) {
         buf[0] = '\0';
         TAILQ_FOREACH(rule, &rules, next) {

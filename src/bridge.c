@@ -106,7 +106,7 @@ do_bridge_unidirectional(tcpbridge_opt_t *options, tcpedit_t *tcpedit)
     livedata.pcap = options->pcap1;
     livedata.options = options;
 
-    if ((retcode = pcap_loop(options->pcap1, options->limit_send, 
+    if ((retcode = pcap_loop(options->pcap1, options->limit_send,
             (pcap_handler)live_callback, (u_char *) &livedata)) < 0) {
         warnx("Error in pcap_loop(): %s", pcap_geterr(options->pcap1));
     }
@@ -130,7 +130,7 @@ do_bridge_bidirectional(tcpbridge_opt_t *options, tcpedit_t *tcpedit)
     livedata.options = options;
 
 
-    /* 
+    /*
      * loop until ctrl-C or we've sent enough packets
      * note that if -L wasn't specified, limit_send is
      * set to 0 so this will loop infinately
@@ -139,7 +139,7 @@ do_bridge_bidirectional(tcpbridge_opt_t *options, tcpedit_t *tcpedit)
         if (didsig)
             break;
 
-        dbgx(3, "limit_send: " COUNTER_SPEC " \t pkts_sent: " COUNTER_SPEC, 
+        dbgx(3, "limit_send: " COUNTER_SPEC " \t pkts_sent: " COUNTER_SPEC,
             options->limit_send, stats.pkts_sent);
 
         /* reset the result codes */
@@ -196,7 +196,7 @@ do_bridge_bidirectional(tcpbridge_opt_t *options, tcpedit_t *tcpedit)
 
 
 /**
- * Main entry point to bridging.  Does some initial setup and then calls the 
+ * Main entry point to bridging.  Does some initial setup and then calls the
  * correct loop (unidirectional or bidirectional)
  */
 void
@@ -371,33 +371,33 @@ live_callback(struct live_data_t *livedata, struct pcap_pkthdr *pkthdr,
         }
     }
 
-    /* 
+    /*
      * send packets out the OTHER interface
      * and update the dst mac if necessary
      */
     switch(node->source) {
         case PCAP_INT1:
-            dbgx(2, "Packet source was %s... sending out on %s", livedata->options->intf1, 
+            dbgx(2, "Packet source was %s... sending out on %s", livedata->options->intf1,
                 livedata->options->intf2);
             send = livedata->options->pcap2;
             break;
 
         case PCAP_INT2:
-            dbgx(2, "Packet source was %s... sending out on %s", livedata->options->intf2, 
+            dbgx(2, "Packet source was %s... sending out on %s", livedata->options->intf2,
                 livedata->options->intf1);
             send = livedata->options->pcap1;
             break;
 
         default:
-            errx(-1, "wtf?  our node->source != PCAP_INT1 and != PCAP_INT2: %c", 
+            errx(-1, "wtf?  our node->source != PCAP_INT1 and != PCAP_INT2: %c",
                  node->source);
     }
 
     /*
-     * write packet out on the network 
+     * write packet out on the network
      */
      if (pcap_sendpacket(send, pktdata, pkthdr->caplen) < 0)
-         errx(-1, "Unable to send packet out %s: %s", 
+         errx(-1, "Unable to send packet out %s: %s",
             send == livedata->options->pcap1 ? livedata->options->intf1 : livedata->options->intf2, pcap_geterr(send));
 
     stats.bytes_sent += pkthdr->caplen;

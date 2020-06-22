@@ -23,7 +23,7 @@ autogen definitions options;
 copyright = {
     date        = "2000-2012";
     owner       = "Aaron Turner and Fred Klassen";
-    eaddr       = "tcpreplay-users@lists.sourceforge.net"; 
+    eaddr       = "tcpreplay-users@lists.sourceforge.net";
     type        = gpl;
     author      = <<- EOText
 Copyright 2000-2012 Aaron Turner
@@ -86,7 +86,7 @@ flag = {
     arg-default = 0;
     descrip     = "Enable debugging output";
     doc         = <<- EOText
-If configured with --enable-debug, then you can specify a verbosity 
+If configured with --enable-debug, then you can specify a verbosity
 level for debugging output.  Higher numbers increase verbosity.
 EOText;
 };

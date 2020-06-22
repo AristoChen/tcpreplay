@@ -36,7 +36,7 @@
 #include "incremental_checksum.h"
 
 /**
- * mallocs a new tcpedit_portmap_t structure 
+ * mallocs a new tcpedit_portmap_t structure
  */
 tcpedit_portmap_t *
 new_portmap()
@@ -52,10 +52,10 @@ new_portmap()
  *
  * We support the following formats:
  * <port>:<port>         - map a single port to a new port
- * <port>-<port>:<port>  - map a range of ports to a new port 
- * <port>+<port>+...:<port> - map a list of ports to a single ports 
+ * <port>-<port>:<port>  - map a range of ports to a new port
+ * <port>+<port>+...:<port> - map a list of ports to a single ports
  *
- * In the case of port ranges or port lists, we actually return a 
+ * In the case of port ranges or port lists, we actually return a
  * chain of tcpedit_portmap_t's
  */
 static tcpedit_portmap_t *
@@ -96,7 +96,7 @@ ports2PORT(char *ports)
         return NULL;
 
     /*
-     * put the new portmap info into the new node 
+     * put the new portmap info into the new node
      * while we convert to network-byte order, b/c its better
      * to do it once now, rather then each time we have to do a lookup
      */
@@ -179,7 +179,7 @@ ports2PORT(char *ports)
 
 /**
  * Processes a string (ourstr) containing the portmap ("2000:4000" for
- * example) and places the data in **portmapdata and finally returns 1 for 
+ * example) and places the data in **portmapdata and finally returns 1 for
  * success, 0 for fail.
  */
 int
@@ -242,7 +242,7 @@ free_portmap(tcpedit_portmap_t * portmap)
 
 
 /**
- * This function takes a pointer to a portmap list and prints each node 
+ * This function takes a pointer to a portmap list and prints each node
  */
 void
 print_portmap(tcpedit_portmap_t *portmap_data)

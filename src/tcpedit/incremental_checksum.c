@@ -19,10 +19,10 @@
  */
 
 /*
- * This code is heavily based on (some might even say stolen from) Mike Shiffman's 
+ * This code is heavily based on (some might even say stolen from) Mike Shiffman's
  * checksumming code from Libnet 1.1.3
  */
- 
+
 #include "config.h"
 #include "tcpedit.h"
 #include "incremental_checksum.h"

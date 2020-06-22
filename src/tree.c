@@ -38,7 +38,7 @@ extern int debug;
 #endif
 
 /* static buffer used by tree_print*() functions */
-char tree_print_buff[TREEPRINTBUFFLEN]; 
+char tree_print_buff[TREEPRINTBUFFLEN];
 
 static tcpr_tree_t *new_tree();
 static tcpr_tree_t *packet2tree(const u_char *, const int);
@@ -84,7 +84,7 @@ tree_buildcidr(tcpr_data_tree_t *treeroot, tcpr_buildcidr_t * bcdata)
         dbgx(4, "Checking if %s exists in cidrdata...", get_addr2name4(node->u.ip, RESOLVE));
         if (node->family == AF_INET) {
             if (! check_ip_cidr(options->cidrdata, node->u.ip)) {   /* if we exist, abort */
-                dbgx(3, "Node %s doesn't exist... creating.", 
+                dbgx(3, "Node %s doesn't exist... creating.",
                     get_addr2name4(node->u.ip, RESOLVE));
                 newcidr = new_cidr();
                 newcidr->masklen = bcdata->masklen;
@@ -93,7 +93,7 @@ tree_buildcidr(tcpr_data_tree_t *treeroot, tcpr_buildcidr_t * bcdata)
                 newcidr->u.network = network;
                 add_cidr(&options->cidrdata, &newcidr);
             }
-        } 
+        }
         /* Check IPv6 Address */
         else if (node->family == AF_INET6) {
             if (! check_ip6_cidr(options->cidrdata, &node->u.ip6)) {   /* if we exist, abort */
@@ -276,12 +276,12 @@ check_ip_tree(const int mode, const unsigned long ip)
         case DIR_UNKNOWN:
         case DIR_ANY:
             /* use our current mode to determine return code */
-            goto return_unknown; 
+            goto return_unknown;
         default:
             errx(-1, "Node for %s has invalid type: %d", get_addr2name4(ip, RESOLVE), node->type);
         }
     }
-    
+
 return_unknown:
     safe_free(finder);
     switch (mode) {
@@ -365,7 +365,7 @@ return_unknown:
 }
 
 /**
- * Parses the IP header of the given packet (data) to get the SRC/DST IP 
+ * Parses the IP header of the given packet (data) to get the SRC/DST IP
  * addresses.  If the SRC IP doesn't exist in the TREE, we add it as a
  * client, if the DST IP doesn't exist in the TREE, we add it as a server
  */
@@ -374,7 +374,7 @@ add_tree_first_ipv4(const u_char *data, const int len)
 {
     tcpr_tree_t *newnode, *findnode;
     ipv4_hdr_t ip_hdr;
-    
+
     assert(data);
 
     if (len < (TCPR_ETH_H + TCPR_IPV4_H)) {
@@ -382,8 +382,8 @@ add_tree_first_ipv4(const u_char *data, const int len)
         return;
     }
 
-    /* 
-     * first add/find the source IP/client 
+    /*
+     * first add/find the source IP/client
      */
     newnode = new_tree();
 
@@ -396,14 +396,14 @@ add_tree_first_ipv4(const u_char *data, const int len)
     newnode->type = DIR_CLIENT;
     newnode->client_cnt = 1000;
     findnode = RB_FIND(tcpr_data_tree_s, &treeroot, newnode);
-    
+
     /* if we didn't find it, add it to the tree, else free it */
     if (findnode == NULL) {
         RB_INSERT(tcpr_data_tree_s, &treeroot, newnode);
     } else {
         safe_free(newnode);
     }
-    
+
     /*
      * now add/find the destination IP/server
      */
@@ -440,7 +440,7 @@ add_tree_first_ipv6(const u_char *data, const int len)
      * first add/find the source IP/client
      */
     newnode = new_tree();
-    
+
     /* prevent issues with byte alignment, must memcpy */
     memcpy(&ip6_hdr, (data + TCPR_ETH_H), TCPR_IPV6_H);
 
@@ -512,7 +512,7 @@ add_tree_node(tcpr_tree_t *newnode)
             /* temp debug code */
             node->client_cnt++;
         }
-                    
+
         /* didn't insert it, so free it */
         safe_free(newnode);
     }
@@ -588,18 +588,18 @@ tree_calculate(tcpr_data_tree_t *treeroot)
             /* type based on: server >= (client*ratio) */
             if ((double)node->server_cnt >= (double)node->client_cnt * options->ratio) {
                 node->type = DIR_SERVER;
-                dbgx(3, "Setting %s to server", 
+                dbgx(3, "Setting %s to server",
                         get_addr2name4(node->u.ip, RESOLVE));
             }
             else {
                 node->type = DIR_CLIENT;
-                dbgx(3, "Setting %s to client", 
+                dbgx(3, "Setting %s to client",
                         get_addr2name4(node->u.ip, RESOLVE));
             }
         }
         else {                  /* IP had no client or server connections */
             node->type = DIR_UNKNOWN;
-            dbgx(3, "Setting %s to unknown", 
+            dbgx(3, "Setting %s to unknown",
                     get_addr2name4(node->u.ip, RESOLVE));
         }
     }
@@ -793,8 +793,8 @@ packet2tree(const u_char * data, const int len)
     strncpy((char *)node->mac, (char *)eth_hdr->ether_shost,
             sizeof(node->mac) - 1);
 
-    /* 
-     * TCP 
+    /*
+     * TCP
      */
     if (proto == IPPROTO_TCP) {
 
@@ -825,8 +825,8 @@ packet2tree(const u_char * data, const int len)
         }
 
     }
-    /* 
-     * UDP 
+    /*
+     * UDP
      */
     else if (proto == IPPROTO_UDP) {
         if (len < TCPR_ETH_H + TCPR_UDP_H + hl) {
@@ -896,8 +896,8 @@ packet2tree(const u_char * data, const int len)
             break;
         }
     }
-    /* 
-     * ICMP 
+    /*
+     * ICMP
      */
     else if (proto == IPPROTO_ICMP) {
         if (len < TCPR_ETH_H + TCPR_ICMPV4_H + hl) {
@@ -910,7 +910,7 @@ packet2tree(const u_char * data, const int len)
         dbgx(3, "%s uses ICMP...  ", srcip);
 
         /*
-         * if port unreachable, then source == server, dst == client 
+         * if port unreachable, then source == server, dst == client
          */
         if ((icmp_hdr.icmp_type == ICMP_UNREACH) &&
             (icmp_hdr.icmp_code == ICMP_UNREACH_PORT)) {

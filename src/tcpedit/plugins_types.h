@@ -31,8 +31,8 @@ extern "C" {
 #endif
 
 
-/* 
- * Plugin Requires/Provides Bit Masks 
+/*
+ * Plugin Requires/Provides Bit Masks
  * If you add any fields to the provides/requires bitmask,
  * then you also must add appropriate records for
  * tcpeditdlt_bit_map[] and tcpeditdlt_bit_info[]
@@ -69,7 +69,7 @@ typedef enum {
 typedef struct tcpeditdlt_plugin_s tcpeditdlt_plugin_t;
 typedef struct tcpeditdlt_s tcpeditdlt_t;
 
-/* 
+/*
  * Each plugin must fill this out so that we know what function
  * to call from the external API
  */
@@ -108,14 +108,14 @@ struct tcpeditdlt_s {
 #endif
     tcpeditdlt_plugin_t *plugins;       /* registered plugins */
     tcpeditdlt_plugin_t *decoder;       /* Encoder plugin */
-    tcpeditdlt_plugin_t *encoder;       /* Decoder plugin */      
+    tcpeditdlt_plugin_t *encoder;       /* Decoder plugin */
 
     /* decoder validator tells us which kind of address we're processing */
-    tcpeditdlt_l2addr_type_t addr_type;    
+    tcpeditdlt_l2addr_type_t addr_type;
 
     /* skip rewriting IP/MAC's which are broadcast or multicast? */
     int skip_broadcast;
-    
+
     /* original DLT */
     u_int16_t dlt;
 

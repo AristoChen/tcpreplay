@@ -24,8 +24,8 @@
 #include "plugins_types.h"
 #include "plugins_api.h"
 
-/* 
- * Encoder DLT plugin authors who create API functions should add their 
+/*
+ * Encoder DLT plugin authors who create API functions should add their
  * API header files here
  */
 #include "plugins/dlt_en10mb/en10mb_api.h"

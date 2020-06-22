@@ -41,10 +41,10 @@ extern int debug;
 
 /**
  * Method takes a user specified device name and returns
- * the canonical name for that device.  This allows me to 
+ * the canonical name for that device.  This allows me to
  * create named interface aliases on platforms like Windows
  * which use horrifically long interface names
- * 
+ *
  * Returns NULL on error
  */
 char *
@@ -68,7 +68,7 @@ get_interface(interface_list_t *list, const char *alias)
     return(NULL);
 }
 
-/** 
+/**
  * Get all available interfaces as an interface_list *
  */
 interface_list_t *
@@ -235,12 +235,12 @@ list_interfaces(interface_list_t *list)
     }
 
     printf("Available network interfaces:\n");
-        
+
 #ifdef HAVE_WIN32  /* Win32 has alias/name/description */
     printf("Alias\tName\tDescription\n");
 #endif
-    
-    
+
+
     ptr = list;
 
     do {

@@ -19,7 +19,7 @@
  */
 
 /*
- * xX stands for "include or exclude" which is used with the 
+ * xX stands for "include or exclude" which is used with the
  * -x and -X flags
  *
  * Functions for use to process args for or check data against in
@@ -66,18 +66,18 @@ parse_xX_str(tcpr_xX_t *xX, char *str, tcpr_bpf_t *bpf)
         if (!parse_cidr(&(xX->cidr), str, ","))
             return xXError;
         break;
-        
+
     case 'F':                  /* bpf filter */
         str = str + 2;
         out = xXBPF;
         bpf->filter = safe_strdup(str);
-        /* 
+        /*
          * note: it's temping to compile the BPF here, but we don't
-         * yet know what the link type is for the file, so we have 
+         * yet know what the link type is for the file, so we have
          * to compile the BPF once we open the pcap file
          */
         break;
-        
+
     case 'P':                  /* packet id */
         str = str + 2;
         out = xXPacket;
@@ -122,7 +122,7 @@ process_xX_by_cidr_ipv4(int mode, tcpr_cidr_t * cidr, ipv4_hdr_t * ip_hdr)
         /* Exclude mode */
         switch (mode ^ xXExclude) {
         case xXSource:
-            /* note: check_ip_cidr() returns TCPR_DIR_C2S for true, TCPR_DIR_S2C for false 
+            /* note: check_ip_cidr() returns TCPR_DIR_C2S for true, TCPR_DIR_S2C for false
              * and NOT true/false or 1/0, etc!
              */
             return check_ip_cidr(cidr, ip_hdr->ip_src.s_addr) ? DONT_SEND : SEND;

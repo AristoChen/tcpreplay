@@ -30,7 +30,7 @@ EXTRA_DIST += %reldir%/%{plugin}_opts.def
 	%reldir%/%{plugin}_api.h \
 	%reldir%/%{plugin}_types.h \
 	$(eol)
-	
+
 # Note:
 # You probably don't want to touch anything below this line until the end of the plugin
 

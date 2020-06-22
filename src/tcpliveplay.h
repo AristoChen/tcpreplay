@@ -49,26 +49,26 @@
 
 
 // 6 byte MAC Address
-struct mac_addr { 
-    unsigned char byte1; 
-    unsigned char byte2; 
-    unsigned char byte3; 
-    unsigned char byte4; 
-    unsigned char byte5; 
-    unsigned char byte6; 
+struct mac_addr {
+    unsigned char byte1;
+    unsigned char byte2;
+    unsigned char byte3;
+    unsigned char byte4;
+    unsigned char byte5;
+    unsigned char byte6;
 };
 
 
 typedef struct ip_addr input_addr;
-// 4 bytes IP address 
-struct ip_addr{ 
-    unsigned char byte1; 
-    unsigned char byte2; 
-    unsigned char byte3; 
-    unsigned char byte4;  
-}; 
+// 4 bytes IP address
+struct ip_addr{
+    unsigned char byte1;
+    unsigned char byte2;
+    unsigned char byte3;
+    unsigned char byte4;
+};
 
-typedef struct ether_hdr ether_hdr; 
+typedef struct ether_hdr ether_hdr;
 /* Ethernet header */
 struct ether_hdr {
     u_char ether_dhost[ETHER_ADDR_LEN]; /* Destination host address */
@@ -116,7 +116,7 @@ struct tcpheader{
     u_int16_t     th_win;
     u_int16_t     th_sum;
     u_int16_t     th_urp;
-}; 
+};
 
 
 #define TH_FIN 0x01

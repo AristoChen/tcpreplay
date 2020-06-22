@@ -24,7 +24,7 @@ autogen definitions options;
 copyright = {
     date        = "2000-2018";
     owner       = "Aaron Turner and Fred Klassen";
-    eaddr       = "tcpreplay-users@lists.sourceforge.net"; 
+    eaddr       = "tcpreplay-users@lists.sourceforge.net";
     type        = gpl;
     author      = <<- EOText
 Copyright 2013-2018 Fred Klassen - AppNeta
@@ -41,7 +41,7 @@ EOText;
 package         = "tcpreplay";
 #ifdef TCPREPLAY_EDIT_MAN
 prog-name       = "tcpreplay-edit";
-#else 
+#else
 prog-name       = "tcpreplay";
 #endif
 prog-title      = "Replay network traffic stored in pcap files";
@@ -76,7 +76,7 @@ EOExplain;
 
 detail = <<- EODetail
 The basic operation of tcpreplay is to resend  all  packets  from  the
-input file(s) at the speed at which they were recorded, or a specified 
+input file(s) at the speed at which they were recorded, or a specified
 data rate, up to as fast as the hardware is capable.
 
 Optionally, the traffic can be split between two interfaces, written to
@@ -104,7 +104,7 @@ tcpdump(1), tcpbridge(1), tcprewrite(1), tcpprep(1), tcpcapinfo(1)
 tcpreplay can only send packets as fast as your computer's interface,
 processor, disk and system bus will allow.
 
-Packet timing at high speeds is a black art and very OS/CPU dependent.  
+Packet timing at high speeds is a black art and very OS/CPU dependent.
 
 Replaying captured traffic may simulate odd or broken conditions on your
 network and cause all sorts of problems.
@@ -128,7 +128,7 @@ flag = {
     arg-default = 0;
     descrip     = "Enable debugging output";
     doc         = <<- EOText
-If configured with --enable-debug, then you can specify a verbosity 
+If configured with --enable-debug, then you can specify a verbosity
 level for debugging output.  Higher numbers increase verbosity.
 EOText;
 };
@@ -200,7 +200,7 @@ When enabling verbose mode (@var{-v}) you may also specify one or more
 additional  arguments to pass to @code{tcpdump} to modify the way packets
 are decoded.  By default, -n and -l are used.   Be  sure  to
 quote the arguments like: -A "-axxx" so that they are not interpreted
-by tcpreplay.   Please see the tcpdump(1) man page for a complete list of 
+by tcpreplay.   Please see the tcpdump(1) man page for a complete list of
 options.
 EOText;
 };
@@ -249,7 +249,7 @@ flag = {
     doc         = <<- EOText
 If you captured network traffic using a network tap, then you can end up with
 two pcap files- one for each direction.  This option will replay these two
-files at the same time, one on each interface and inter-mix them using the 
+files at the same time, one on each interface and inter-mix them using the
 timestamps in each.
 EOText;
 };
@@ -266,8 +266,8 @@ flag = {
     must-set;
     descrip     = "Client to server/RX/primary traffic output interface";
     doc         = <<- EOText
-Required network interface used to send either all traffic or traffic which is 
-marked as 'primary' via tcpprep.  Primary traffic is usually client-to-server 
+Required network interface used to send either all traffic or traffic which is
+marked as 'primary' via tcpprep.  Primary traffic is usually client-to-server
 or inbound (RX) on khial virtual interfaces.
 EOText;
 };
@@ -279,8 +279,8 @@ flag = {
     max         = 1;
     descrip     = "Server to client/TX/secondary traffic output interface";
     doc         = <<- EOText
-Optional network interface used to send traffic which is marked as 'secondary' 
-via tcpprep.  Secondary traffic is usually server-to-client or outbound 
+Optional network interface used to send traffic which is marked as 'secondary'
+via tcpprep.  Secondary traffic is usually server-to-client or outbound
 (TX) on khial virtual interfaces.  Generally, it only makes sense to use this
 option with --cachefile.
 EOText;
@@ -351,8 +351,8 @@ flag = {
     arg-range   = "1->";
     descrip     = "Limit the number of packets to send";
     doc         = <<- EOText
-By default, tcpreplay will send all the packets.  Alternatively, you can 
-specify a maximum number of packets to send.  
+By default, tcpreplay will send all the packets.  Alternatively, you can
+specify a maximum number of packets to send.
 EOText;
 };
 
@@ -478,7 +478,7 @@ flag = {
 #endif
     descrip     = "Modify IP addresses each loop iteration to generate unique flows";
     doc         = <<- EOText
-Ensure IPv4 and IPv6 packets will be unique for each @var{--loop} iteration. 
+Ensure IPv4 and IPv6 packets will be unique for each @var{--loop} iteration.
 This is done in a way that will not alter packet CRC, and therefore will genrally
 not affect performance. This option will significantly increase the flows/sec over
 generated over multiple loop iterations.
@@ -534,15 +534,15 @@ flag = {
     doc         = <<- EOText
 Suppress the collection and printing of flow statistics. This option may
 improve performance when not using @var{--preload-pcap} option, otherwise
-its only function is to suppress printing. 
+its only function is to suppress printing.
 
-The flow feature will track and print statistics of the flows being sent. 
-A flow is loosely defined as a unique combination of a 5-tuple, i.e. 
+The flow feature will track and print statistics of the flows being sent.
+A flow is loosely defined as a unique combination of a 5-tuple, i.e.
 source IP, destination IP, source port, destination port and protocol.
 
 If @var{--loop} is specified, the flows from one iteration to the next
 will not be unique, unless the packets are altered. Use @var{--unique-ip}
-or @var{tcpreplay-edit} to alter packets between iterations. 
+or @var{tcpreplay-edit} to alter packets between iterations.
 EOText;
 };
 
@@ -559,7 +559,7 @@ times. The timestamps within the pcap file are used to determine the expiry,
 not the actual timestamp of the packets are replayed. For example, a value of
 30 suggests that if no traffic is seen on a flow for 30 seconds, any
 subsequent traffic would be considered a new flow, and thereby will increment
-the flows and flows per second (fps) statistics. 
+the flows and flows per second (fps) statistics.
 
 This option can be used to optimize flow timeout settings for flow products.
 Setting the timeout low may lead to flows being dropped when in fact the flow
@@ -613,7 +613,7 @@ flag = {
     fprintf(stderr, "\n");
     fprintf(stderr, "Copyright 2013-2018 by Fred Klassen <tcpreplay at appneta dot com> - AppNeta\n");
     fprintf(stderr, "Copyright 2000-2012 by Aaron Turner <aturner at synfin dot net>\n");
-    fprintf(stderr, "The entire Tcpreplay Suite is licensed under the GPLv3\n");  
+    fprintf(stderr, "The entire Tcpreplay Suite is licensed under the GPLv3\n");
     fprintf(stderr, "Cache file supported: %s\n", CACHEVERSION);
 #ifdef HAVE_LIBDNET
     fprintf(stderr, "Compiled against libdnet: %s\n", LIBDNET_VERSION);

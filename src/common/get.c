@@ -41,8 +41,8 @@ extern const char pcap_version[];
 
 
 /**
- * Depending on what version of libpcap/WinPcap there are different ways to get 
- * the version of the libpcap/WinPcap library.  This presents a unified way to 
+ * Depending on what version of libpcap/WinPcap there are different ways to get
+ * the version of the libpcap/WinPcap library.  This presents a unified way to
  * get that information.
  */
 const char *
@@ -152,7 +152,7 @@ get_l2protocol(const u_char *pktdata, const uint32_t datalen, const int datalink
         break;
 
     default:
-        errx(-1, "Unable to process unsupported DLT type: %s (0x%x)", 
+        errx(-1, "Unable to process unsupported DLT type: %s (0x%x)",
              pcap_datalink_val_to_description(datalink), datalink);
 
     }
@@ -235,7 +235,7 @@ get_l2len(const u_char *pktdata, const int datalen, const int datalink)
         break;
 
     default:
-        errx(-1, "Unable to process unsupported DLT type: %s (0x%x)", 
+        errx(-1, "Unable to process unsupported DLT type: %s (0x%x)",
              pcap_datalink_val_to_description(datalink), datalink);
         return -1; /* we shouldn't get here */
     }
@@ -250,7 +250,7 @@ get_l2len(const u_char *pktdata, const int datalen, const int datalink)
  * on strictly aligned systems where the layer 2 header doesn't
  * fall on a 4 byte boundary (like a standard Ethernet header)
  *
- * Note: you can cast the result as an ip_hdr_t, but you'll be able 
+ * Note: you can cast the result as an ip_hdr_t, but you'll be able
  * to access data above the header minus any stripped L2 data
  */
 const u_char *
@@ -281,7 +281,7 @@ get_ipv4(const u_char *pktdata, int datalen, int datalink, u_char **newbuff)
     /*
      * copy layer 3 and up to our temp packet buffer
      * for now on, we have to edit the packetbuff because
-     * just before we send the packet, we copy the packetbuff 
+     * just before we send the packet, we copy the packetbuff
      * back onto the pkt.data + l2len buffer
      * we do all this work to prevent byte alignment issues
      */
@@ -295,7 +295,7 @@ get_ipv4(const u_char *pktdata, int datalen, int datalink, u_char **newbuff)
     }
 #else
     /*
-     * on non-strict byte align systems, don't need to memcpy(), 
+     * on non-strict byte align systems, don't need to memcpy(),
      * just point to l2len bytes into the existing buffer
      */
     ip_hdr = (pktdata + l2_len);
@@ -312,7 +312,7 @@ get_ipv4(const u_char *pktdata, int datalen, int datalink, u_char **newbuff)
  * on strictly aligned systems where the layer 2 header doesn't
  * fall on a 4 byte boundary (like a standard Ethernet header)
  *
- * Note: you can cast the result as an ip_hdr_t, but you'll be able 
+ * Note: you can cast the result as an ip_hdr_t, but you'll be able
  * to access data above the header minus any stripped L2 data
  */
 const u_char *
@@ -446,7 +446,7 @@ get_layer4_v6(const ipv6_hdr_t *ip6_hdr, const int l3len)
          */
         default:
             if (proto != ip6_hdr->ip_nh) {
-                dbgx(3, "Returning byte offset of this ext header: %u", 
+                dbgx(3, "Returning byte offset of this ext header: %u",
                         IPV6_EXTLEN_TO_BYTES(next->ip_len));
                 return (void *)((u_char *)next + IPV6_EXTLEN_TO_BYTES(next->ip_len));
             } else {
@@ -483,7 +483,7 @@ get_ipv6_next(struct tcpr_ipv6_ext_hdr_base *exthdr, const int len)
         break;
 
     /*
-     * fragment header is fixed size 
+     * fragment header is fixed size
      * FIXME: Frag header has further ext headers (has a ip_nh field)
      * but I don't support it because there's never a full L4 + payload beyond.
      */
@@ -521,7 +521,7 @@ get_ipv6_next(struct tcpr_ipv6_ext_hdr_base *exthdr, const int len)
  * returns the protocol of the actual layer4 header by processing through
  * the extension headers
  */
-uint8_t 
+uint8_t
 get_ipv6_l4proto(const ipv6_hdr_t *ip6_hdr, const int l3len)
 {
     u_char *ptr = (u_char *)ip6_hdr + TCPR_IPV6_H; /* jump to the end of the IPv6 header */
@@ -577,7 +577,7 @@ get_ipv6_l4proto(const ipv6_hdr_t *ip6_hdr, const int l3len)
 /**
  * \brief Converts a human readable IPv4 address to a binary one
  *
- * stolen from LIBNET since I didn't want to have to deal with 
+ * stolen from LIBNET since I didn't want to have to deal with
  * passing a libnet_t around.  Returns 0xFFFFFFFF (255.255.255.255)
  * on error
  */
@@ -586,7 +586,7 @@ get_name2addr4(const char *hostname, bool dnslookup)
 {
     struct in_addr addr;
 #if ! defined HAVE_INET_ATON && defined HAVE_INET_ADDR
-    struct hostent *host_ent; 
+    struct hostent *host_ent;
 #endif
 
     if (dnslookup) {
@@ -604,12 +604,12 @@ get_name2addr4(const char *hostname, bool dnslookup)
             }
 
             /* was: host_ent->h_length); */
-            memcpy(&addr.s_addr, host_ent->h_addr, sizeof(addr.s_addr)); 
+            memcpy(&addr.s_addr, host_ent->h_addr, sizeof(addr.s_addr));
         }
 #else
         warn("Unable to support get_name2addr4 w/ resolve");
         /* call ourselves recursively once w/o resolving the hostname */
-        return get_name2addr4(hostname, DNS_DONT_RESOLVE); 
+        return get_name2addr4(hostname, DNS_DONT_RESOLVE);
 #endif
         /* return in network byte order */
         return (addr.s_addr);
@@ -621,7 +621,7 @@ get_name2addr4(const char *hostname, bool dnslookup)
         uint32_t m;
 
         if (!isdigit(hostname[0])) {
-            warnx("Expected dotted-quad notation (%s) when DNS lookups are disabled", 
+            warnx("Expected dotted-quad notation (%s) when DNS lookups are disabled",
                     hostname);
             /* XXX - this is actually 255.255.255.255 */
             return (-1);

@@ -23,7 +23,7 @@
 #include "common.h"
 #ifndef HAVE_STRLCPY
 #include "lib/strlcpy.h"
-#endif 
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -141,7 +141,7 @@ new_cidr(void)
     tcpr_cidr_t *newcidr;
 
     newcidr = (tcpr_cidr_t *)safe_malloc(sizeof(tcpr_cidr_t));
-    
+
     memset(newcidr, '\0', sizeof(tcpr_cidr_t));
     newcidr->masklen = 99;
     newcidr->next = NULL;
@@ -158,7 +158,7 @@ new_cidr_map(void)
     tcpr_cidrmap_t *new;
 
     new = (tcpr_cidrmap_t *)safe_malloc(sizeof(tcpr_cidrmap_t));
-    
+
     memset(new, '\0', sizeof(tcpr_cidrmap_t));
     new->next = NULL;
 
@@ -272,7 +272,7 @@ error:
     return NULL;
 }
 
-static void 
+static void
 mask_cidr6(char **cidrin, char* delim)
 {
     if (**cidrin == '[' && *delim == ':') {
@@ -350,12 +350,12 @@ parse_endpoints(tcpr_cidrmap_t ** cidrmap1, tcpr_cidrmap_t ** cidrmap2, const ch
         p = strstr(string, "]:[");
         if (!p)
             goto done;
-            
+
         *p = 0;
         strlcpy(newmap, "[::/0]:", NEWMAP_LEN);
         strlcat(newmap, string, NEWMAP_LEN);
         strlcat(newmap, "]", NEWMAP_LEN);
-        
+
         if (! parse_cidr_map(cidrmap1, newmap))
             goto done;
 
@@ -376,17 +376,17 @@ parse_endpoints(tcpr_cidrmap_t ** cidrmap1, tcpr_cidrmap_t ** cidrmap2, const ch
         strlcat(newmap, map, NEWMAP_LEN);
         if (! parse_cidr_map(cidrmap1, newmap))
             goto done;
-    
+
         /* do again with the second IP */
         memset(newmap, '\0', NEWMAP_LEN);
         map = strtok_r(NULL, ":", &token);
-    
+
         strlcpy(newmap, "0.0.0.0/0:", NEWMAP_LEN);
         strlcat(newmap, map, NEWMAP_LEN);
         if (! parse_cidr_map(cidrmap2, newmap))
             goto done;
     }
-    
+
     /* success */
     res = 1;
 
@@ -411,7 +411,7 @@ parse_cidr_map(tcpr_cidrmap_t **cidrmap, const char *optarg)
     char *token = NULL, *string;
     tcpr_cidrmap_t *ptr;
     int res = 0;
-    
+
     string = safe_strdup(optarg);
 
     /* first iteration */
@@ -472,7 +472,7 @@ ip_in_cidr(const tcpr_cidr_t * mycidr, const unsigned long ip)
 #ifdef DEBUG
     char netstr[20];
 #endif
-    
+
     if (mycidr->family != AF_INET)
         return 0;
 
@@ -545,7 +545,7 @@ ip6_in_cidr(const tcpr_cidr_t * mycidr, const struct tcpr_in6_addr *addr)
             goto out;
         }
     }
-    
+
     if ((k = mycidr->masklen % 8) == 0) {
         ret = 1;
         goto out;
@@ -589,12 +589,12 @@ check_ip_cidr(tcpr_cidr_t * cidrdata, const unsigned long ip)
 {
     tcpr_cidr_t *mycidr;
 
-    /* if we have no cidrdata, of course it isn't in there 
+    /* if we have no cidrdata, of course it isn't in there
      * this actually should happen occasionally, so don't put an assert here
      */
     if (cidrdata == NULL)
         return 1;
-        
+
     mycidr = cidrdata;
 
     /* loop through cidr */
@@ -605,7 +605,7 @@ check_ip_cidr(tcpr_cidr_t * cidrdata, const unsigned long ip)
             dbgx(3, "Found %s in cidr", get_addr2name4(ip, RESOLVE));
             return 1;
         }
-        
+
         /* check for next record */
         if (mycidr->next != NULL) {
             mycidr = mycidr->next;
@@ -641,7 +641,7 @@ check_ip6_cidr(tcpr_cidr_t * cidrdata, const struct tcpr_in6_addr *addr)
             dbgx(3, "Found %s in cidr", get_addr2name6(addr, RESOLVE));
             return 1;
         }
-        
+
         /* check for next record */
         if (mycidr->next != NULL) {
             mycidr = mycidr->next;
@@ -670,7 +670,7 @@ cidr2iplist(tcpr_cidr_t * cidr, char delim)
     struct in_addr in;
     int i;
 
-    /* 
+    /*
      * 16 bytes per IP + delim
      * # of IP's = 2^(32-masklen)
      */

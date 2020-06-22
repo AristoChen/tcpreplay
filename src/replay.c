@@ -40,7 +40,7 @@ static int replay_two_fds(tcpreplay_t *ctx, int idx1, int idx2);
  *
  * This is used by tcpreplay_replay() to actually send the packets
  */
-int 
+int
 tcpr_replay_index(tcpreplay_t *ctx)
 {
     int rcode = 0;
@@ -213,7 +213,7 @@ replay_two_files(tcpreplay_t *ctx, int idx1, int idx2)
 
 
     /* can't use stdin in dualfile mode */
-    if ((strncmp(path1, "-", strlen(path1)) == 0) || 
+    if ((strncmp(path1, "-", strlen(path1)) == 0) ||
         (strncmp(path2, "-", strlen(path2)) == 0)) {
         tcpreplay_seterr(ctx, "%s", "Invalid use of STDIN '-' in dual file mode");
         return -1;
@@ -265,8 +265,8 @@ replay_two_files(tcpreplay_t *ctx, int idx1, int idx2)
         if (ctx->intf1dlt == -1)
             ctx->intf1dlt = sendpacket_get_dlt(ctx->intf1);
         if ((ctx->intf1dlt >= 0) && (ctx->intf1dlt != pcap_datalink(pcap1))) {
-            tcpreplay_setwarn(ctx, "%s DLT (%s) does not match that of the outbound interface: %s (%s)", 
-                path1, pcap_datalink_val_to_name(pcap_datalink(pcap1)), 
+            tcpreplay_setwarn(ctx, "%s DLT (%s) does not match that of the outbound interface: %s (%s)",
+                path1, pcap_datalink_val_to_name(pcap_datalink(pcap1)),
                 ctx->intf1->device, pcap_datalink_val_to_name(ctx->intf1dlt));
             rcode = -2;
         }
@@ -274,8 +274,8 @@ replay_two_files(tcpreplay_t *ctx, int idx1, int idx2)
         if (ctx->intf2dlt == -1)
             ctx->intf2dlt = sendpacket_get_dlt(ctx->intf2);
         if ((ctx->intf2dlt >= 0) && (ctx->intf2dlt != pcap_datalink(pcap2))) {
-            tcpreplay_setwarn(ctx, "%s DLT (%s) does not match that of the outbound interface: %s (%s)", 
-                path2, pcap_datalink_val_to_name(pcap_datalink(pcap2)), 
+            tcpreplay_setwarn(ctx, "%s DLT (%s) does not match that of the outbound interface: %s (%s)",
+                path2, pcap_datalink_val_to_name(pcap_datalink(pcap2)),
                 ctx->intf2->device, pcap_datalink_val_to_name(ctx->intf2dlt));
             rcode = -2;
         }
@@ -321,7 +321,7 @@ replay_two_files(tcpreplay_t *ctx, int idx1, int idx2)
 
 
 /**
- * \brief Replay index using existing memory cache 
+ * \brief Replay index using existing memory cache
  *
  * FIXME
  */
@@ -335,7 +335,7 @@ replay_cache(tcpreplay_t *ctx, int idx)
 }
 
 /**
- * \brief Replay two indexes using existing memory cache 
+ * \brief Replay two indexes using existing memory cache
  *
  * FIXME
  */
@@ -350,7 +350,7 @@ replay_two_caches(tcpreplay_t *ctx, int idx1, int idx2)
 }
 
 /**
- * \brief Replay index which is a file descriptor 
+ * \brief Replay index which is a file descriptor
  *
  * FIXME
  */
@@ -364,7 +364,7 @@ replay_fd(tcpreplay_t *ctx, int idx)
 }
 
 /**
- * \brief Replay two indexes which are a file descriptor 
+ * \brief Replay two indexes which are a file descriptor
  *
  * FIXME
  */

@@ -48,12 +48,12 @@
  * Everyone writing a DLT plugin, must add their registration function
  * here.
  */
-int 
+int
 tcpedit_dlt_register(tcpeditdlt_t *ctx)
 {
     int retcode = 0;
     assert(ctx);
-    
+
     retcode += dlt_en10mb_register(ctx);
     retcode += dlt_hdlc_register(ctx);
     retcode += dlt_user_register(ctx);
@@ -65,10 +65,10 @@ tcpedit_dlt_register(tcpeditdlt_t *ctx)
     retcode += dlt_radiotap_register(ctx);
     retcode += dlt_jnpr_ether_register(ctx);
     retcode += dlt_pppserial_register(ctx);
-    
+
     if (retcode < 0)
         return TCPEDIT_ERROR;
-    
+
     return TCPEDIT_OK;
 }
 
@@ -81,7 +81,7 @@ tcpedit_dlt_register(tcpeditdlt_t *ctx)
  * a look!
  ********************************************************************/
 
-/* 
+/*
  * mapping for bit_mask to bit_info.  If you're making changes here
  * then you almost certainly need to modify tcpeditdlt_t in dlt_plugins-int.h
  */
@@ -97,7 +97,7 @@ const char *tcpeditdlt_bit_info[] = {
     "Missing required Layer 2 source address.",
     "Missing required Layer 2 destination address."
 };
- 
+
 /*********************************************************************
  * Internal functions
  ********************************************************************/
@@ -105,7 +105,7 @@ const char *tcpeditdlt_bit_info[] = {
 /*********************************************************************
  * Public functions
  ********************************************************************/
- 
+
 /**
  * initialize our plugin library.  Pass the DLT of the source pcap handle.
  * Actions:
@@ -119,7 +119,7 @@ const char *tcpeditdlt_bit_info[] = {
  * - Validate provides/reqiures + user options
  */
 tcpeditdlt_t *
-tcpedit_dlt_init(tcpedit_t *tcpedit, const int srcdlt) 
+tcpedit_dlt_init(tcpedit_t *tcpedit, const int srcdlt)
 {
     tcpeditdlt_t *ctx;
     int rcode;
@@ -176,24 +176,24 @@ tcpedit_dlt_init(tcpedit_t *tcpedit, const int srcdlt)
  * you'll need to roll your own!
  * Returns 0 on success, -1 on error
  */
-int 
+int
 tcpedit_dlt_post_args(tcpedit_t *tcpedit)
 {
     tcpeditdlt_t *ctx;
     const char *dst_dlt_name;
     int rcode;
-    
+
     assert(tcpedit);
     ctx = tcpedit->dlt_ctx;
     assert(ctx);
-    
+
     /* Select the encoder plugin */
     dst_dlt_name = OPT_ARG(DLT) ? OPT_ARG(DLT) : ctx->decoder->name;
     if ((ctx->encoder = tcpedit_dlt_getplugin_byname(ctx, dst_dlt_name)) == NULL) {
         tcpedit_seterr(tcpedit, "No output DLT plugin available for: %s", dst_dlt_name);
         return TCPEDIT_ERROR;
     }
-    
+
     /* Figure out if we're skipping braodcast & multicast */
     if (HAVE_OPT(SKIPL2BROADCAST))
         ctx->skip_broadcast = 1;
@@ -214,7 +214,7 @@ tcpedit_dlt_post_args(tcpedit_t *tcpedit)
 
     /* we're OK */
     return tcpedit_dlt_post_init(ctx);
-} 
+}
 
 /**
  * This is the recommended method to edit a packet.  Returns (new) total packet length
@@ -223,16 +223,16 @@ int
 tcpedit_dlt_process(tcpeditdlt_t *ctx, u_char **packet, int pktlen, tcpr_dir_t direction)
 {
     int rcode;
-    
+
     assert(ctx);
     assert(packet);
     assert(direction == TCPR_DIR_C2S || direction == TCPR_DIR_S2C || direction == TCPR_DIR_NOSEND);
-    
+
     /* nothing to do here */
     if (direction == TCPR_DIR_NOSEND)
         return pktlen;
-    
-    /* decode packet */    
+
+    /* decode packet */
     if ((rcode = tcpedit_dlt_decode(ctx, *packet, pktlen)) == TCPEDIT_ERROR) {
         return TCPEDIT_ERROR;
     } else if (rcode == TCPEDIT_WARN) {
@@ -240,37 +240,37 @@ tcpedit_dlt_process(tcpeditdlt_t *ctx, u_char **packet, int pktlen, tcpr_dir_t d
     } else if (rcode == TCPEDIT_SOFT_ERROR) {
         return rcode; /* can't edit the packet */
     }
-    
+
     /* encode packet */
     if ((rcode = tcpedit_dlt_encode(ctx, *packet, pktlen, direction)) == TCPEDIT_ERROR) {
         return TCPEDIT_ERROR;
     } else if (rcode == TCPEDIT_WARN) {
         warnx("Warning encoding packet: %s", tcpedit_getwarn(ctx->tcpedit));
     }
-       
+
     return rcode;
 }
 
 /**
  * \brief Call after tcpedit_dlt_post_args() to allow plugins to do special things
- * 
+ *
  * Useful for plugins to initialize sub-plugins and what not.
  * Returns the standard TCPEDIT_OK|ERROR|WARN
  */
-int 
+int
 tcpedit_dlt_post_init(tcpeditdlt_t *tcpedit)
 {
-    
+
     /* first init decoder */
     if (tcpedit->decoder->plugin_post_init != NULL)
         if (tcpedit->decoder->plugin_post_init(tcpedit) == TCPEDIT_ERROR)
             return TCPEDIT_ERROR;
-            
+
     /* the encoder */
     if (tcpedit->encoder->plugin_post_init != NULL)
         if (tcpedit->encoder->plugin_post_init(tcpedit) == TCPEDIT_ERROR)
             return TCPEDIT_ERROR;
-    
+
     return TCPEDIT_OK;
 }
 
@@ -278,13 +278,13 @@ tcpedit_dlt_post_init(tcpeditdlt_t *tcpedit)
 /**
  * What is the output DLT type???
  */
-int 
+int
 tcpedit_dlt_output_dlt(tcpeditdlt_t *ctx)
 {
     uint16_t dlt;
     assert(ctx);
-        
-    /* 
+
+    /*
      * usually we just return the DLT value of the decoder, but for DLT_USER0
      * we return a user-specified value via --user-dlt
      */
@@ -309,10 +309,10 @@ tcpedit_dlt_l2len(tcpeditdlt_t *ctx, int dlt, const u_char *packet, const int pk
     assert(ctx);
     assert(dlt >= 0);
     assert(packet);
-    
+
     if ((plugin = tcpedit_dlt_getplugin(ctx, dlt)) == NULL) {
         tcpedit_seterr(ctx->tcpedit, "Unable to find plugin for DLT 0x%04x", dlt);
-        return -1;        
+        return -1;
     }
 
     res = plugin->plugin_l2len(ctx, packet, pktlen);
@@ -341,7 +341,7 @@ tcpedit_dlt_proto(tcpeditdlt_t *ctx, int dlt, const u_char *packet, const int pk
         tcpedit_seterr(ctx->tcpedit, "Unable to find plugin for DLT 0x%04x", dlt);
         return -1;
     }
-    
+
     return plugin->plugin_proto(ctx, packet, pktlen);
 }
 
@@ -357,7 +357,7 @@ tcpedit_dlt_l3data(tcpeditdlt_t *ctx, int dlt, u_char *packet, const int pktlen)
     assert(ctx);
     assert(dlt >= 0);
     assert(packet);
-        
+
     if ((plugin = tcpedit_dlt_getplugin(ctx, dlt)) == NULL) {
         tcpedit_seterr(ctx->tcpedit, "Unable to find plugin for DLT 0x%04x", dlt);
         return NULL;
@@ -374,7 +374,7 @@ tcpedit_dlt_l3data(tcpeditdlt_t *ctx, int dlt, u_char *packet, const int pktlen)
 /**
  * \brief Merge the Layer 3 data back onto the mainbuffer so it's immediately
  *   after the layer 2 header
- * 
+ *
  * Since some L2 headers aren't strictly aligned, we need to "merge" the packet w/ L2 data
  * and the L3 buffer.  This is basically a NO-OP for things like vlan tagged ethernet (16 byte) header
  * or Cisco HDLC (4 byte header) but is critical for std ethernet (12 byte header)
@@ -391,7 +391,7 @@ tcpedit_dlt_merge_l3data(tcpeditdlt_t *ctx, int dlt, u_char *packet, const int p
 
     if (l3data == NULL)
         return packet;
-        
+
     if ((plugin = tcpedit_dlt_getplugin(ctx, dlt)) == NULL) {
         tcpedit_seterr(ctx->tcpedit, "Unable to find plugin for DLT 0x%04x", dlt);
         return NULL;
@@ -410,7 +410,7 @@ tcpedit_dlt_merge_l3data(tcpeditdlt_t *ctx, int dlt, u_char *packet, const int p
 /**
  * Call the specific plugin decode() method
  */
-int 
+int
 tcpedit_dlt_decode(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
 {
     return ctx->decoder->plugin_decode(ctx, packet, pktlen);
@@ -419,7 +419,7 @@ tcpedit_dlt_decode(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
 /**
  * Call the specific plugin encode() method
  */
-int 
+int
 tcpedit_dlt_encode(tcpeditdlt_t* ctx, u_char *packet, int pktlen, tcpr_dir_t direction)
 {
     return ctx->encoder->plugin_encode(ctx, packet, pktlen, direction);
@@ -428,7 +428,7 @@ tcpedit_dlt_encode(tcpeditdlt_t* ctx, u_char *packet, int pktlen, tcpr_dir_t dir
 /**
  * what is the source (decoder) DLT type?
  */
-int 
+int
 tcpedit_dlt_src(tcpeditdlt_t *ctx)
 {
     assert(ctx);
@@ -438,11 +438,11 @@ tcpedit_dlt_src(tcpeditdlt_t *ctx)
 /**
  * What is the destination (encoder) DLT type
  */
-int 
+int
 tcpedit_dlt_dst(tcpeditdlt_t *ctx)
 {
    assert(ctx);
-   return ctx->encoder->dlt; 
+   return ctx->encoder->dlt;
 }
 
 
@@ -453,10 +453,10 @@ void
 tcpedit_dlt_cleanup(tcpeditdlt_t *ctx)
 {
     assert(ctx);
-    
+
     if (ctx->encoder != NULL)
         ctx->encoder->plugin_cleanup(ctx);
-    
+
     if (ctx->decoder != NULL)
         ctx->decoder->plugin_cleanup(ctx);
 

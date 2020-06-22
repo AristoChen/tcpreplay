@@ -19,7 +19,7 @@
  */
 
 /*  This file implements a fake, non-functioning version of the libpcapnav
- *  API based on libpcap.  It's solely here for people who don't have 
+ *  API based on libpcap.  It's solely here for people who don't have
  *  libpcapnav installed on their system, and to keep the code maintainable.
  */
 
@@ -32,7 +32,7 @@
 #ifndef HAVE_PCAPNAV
 
 /**
- * pcapnav_init does nothing!  
+ * pcapnav_init does nothing!
  */
 void
 pcapnav_init(void)
@@ -41,8 +41,8 @@ pcapnav_init(void)
 }
 
 /**
- * pcapnav_open_offline opens a pcap file, 
- * and creates the struct for our use  
+ * pcapnav_open_offline opens a pcap file,
+ * and creates the struct for our use
  */
 pcapnav_t *
 pcapnav_open_offline(const char *filename)
@@ -64,7 +64,7 @@ pcapnav_open_offline(const char *filename)
 }
 
 /**
- * closes our pcap file and free's the pcapnav 
+ * closes our pcap file and free's the pcapnav
  */
 void
 pcapnav_close(pcapnav_t * pcapnav)
@@ -74,7 +74,7 @@ pcapnav_close(pcapnav_t * pcapnav)
 }
 
 /**
- * returns the pcap_t data struct 
+ * returns the pcap_t data struct
  */
 pcap_t *
 pcapnav_pcap(pcapnav_t * pcapnav)

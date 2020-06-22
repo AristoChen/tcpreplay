@@ -157,7 +157,7 @@ typedef struct tcpr_speed_s {
                                  * (https://github.com/the-tcpdump-group/libpcap/blob/master/pcap-int.h#L99-L125)
                                  */
 
-#define MAXPACKET (MAX_SNAPLEN + 22)    /* snap length plus some room for adding a 
+#define MAXPACKET (MAX_SNAPLEN + 22)    /* snap length plus some room for adding a
                                          * couple VLAN headers or a L2 header
                                          */
 
@@ -356,17 +356,17 @@ typedef u_int32_t uint32_t
         (a)->tv_nsec = (b)->tv_nsec;        \
     } while(0)
 
-/* 
+/*
  * Help suppress some compiler warnings
- * No problem if variable is actually used 
+ * No problem if variable is actually used
 */
-#ifdef UNUSED 
-#elif defined(__GNUC__) 
-# define UNUSED(x) UNUSED_ ## x __attribute__((unused)) 
-#elif defined(__LCLINT__) 
-# define UNUSED(x) /*@unused@*/ x 
-#else 
-# define UNUSED(x) x 
+#ifdef UNUSED
+#elif defined(__GNUC__)
+# define UNUSED(x) UNUSED_ ## x __attribute__((unused))
+#elif defined(__LCLINT__)
+# define UNUSED(x) /*@unused@*/ x
+#else
+# define UNUSED(x) x
 #endif
 
 #ifndef max

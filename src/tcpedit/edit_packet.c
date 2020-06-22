@@ -48,7 +48,7 @@ static int ipv6_header_length(ipv6_hdr_t const * ip6_hdr, int pkt_len);
 
 /**
  * this code re-calcs the IP and Layer 4 checksums
- * the IMPORTANT THING is that the Layer 4 header 
+ * the IMPORTANT THING is that the Layer 4 header
  * is contiguous in memory after *ip_hdr we're actually
  * writing to the layer 4 header via the ip_hdr ptr.
  * (Yes, this sucks, but that's the way libnet works, and
@@ -83,7 +83,7 @@ fix_ipv4_checksums(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr, ipv4_hdr_t *i
         if (ret1 < 0)
             return TCPEDIT_ERROR;
     }
-    
+
     /* calc IP checksum */
     ip_len = (int)ntohs(ip_hdr->ip_len);
     ret2 = do_checksum(tcpedit, (u_char *) ip_hdr, IPPROTO_IP, ip_len);
@@ -93,7 +93,7 @@ fix_ipv4_checksums(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr, ipv4_hdr_t *i
     /* what do we return? */
     if (ret1 == TCPEDIT_WARN || ret2 == TCPEDIT_WARN)
         return TCPEDIT_WARN;
-    
+
     return TCPEDIT_OK;
 }
 
@@ -330,7 +330,7 @@ static void ipv6_addr_csum_replace(ipv6_hdr_t *ip6_hdr,
 
 
 /**
- * returns a new 32bit integer which is the randomized IP 
+ * returns a new 32bit integer which is the randomized IP
  * based upon the user specified seed
  */
 static uint32_t
@@ -371,12 +371,12 @@ randomize_ipv6_addr(tcpedit_t *tcpedit, struct tcpr_in6_addr *addr)
 
 
 /**
- * randomizes the source and destination IP addresses based on a 
+ * randomizes the source and destination IP addresses based on a
  * pseudo-random number which is generated via the seed.
  * return 1 since we changed one or more IP addresses
  */
 int
-randomize_ipv4(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr, 
+randomize_ipv4(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr,
         u_char *pktdata, ipv4_hdr_t *ip_hdr, const int l3len)
 {
 #ifdef DEBUG
@@ -402,13 +402,13 @@ randomize_ipv4(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr,
     }
 
     /* don't rewrite broadcast addresses */
-    if ((tcpedit->skip_broadcast && is_unicast_ipv4(tcpedit, (u_int32_t)ip_hdr->ip_dst.s_addr)) 
+    if ((tcpedit->skip_broadcast && is_unicast_ipv4(tcpedit, (u_int32_t)ip_hdr->ip_dst.s_addr))
             || !tcpedit->skip_broadcast) {
         uint32_t old_ip = ip_hdr->ip_dst.s_addr;
         ip_hdr->ip_dst.s_addr = randomize_ipv4_addr(tcpedit, ip_hdr->ip_dst.s_addr);
         ipv4_addr_csum_replace(ip_hdr, old_ip, ip_hdr->ip_dst.s_addr, l3len);
     }
-    
+
     if ((tcpedit->skip_broadcast && is_unicast_ipv4(tcpedit, (u_int32_t)ip_hdr->ip_src.s_addr))
             || !tcpedit->skip_broadcast) {
         uint32_t old_ip = ip_hdr->ip_src.s_addr;
@@ -416,7 +416,7 @@ randomize_ipv4(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr,
         ipv4_addr_csum_replace(ip_hdr, old_ip, ip_hdr->ip_src.s_addr, l3len);
     }
 
-#ifdef DEBUG    
+#ifdef DEBUG
     strlcpy(srcip, get_addr2name4(ip_hdr->ip_src.s_addr, RESOLVE), 16);
     strlcpy(dstip, get_addr2name4(ip_hdr->ip_dst.s_addr, RESOLVE), 16);
 #endif
@@ -480,12 +480,12 @@ randomize_ipv6(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr,
 
 /**
  * this code will untruncate a packet via padding it with null
- * or resetting the actual IPv4 packet len to the snaplen - L2 header.  
+ * or resetting the actual IPv4 packet len to the snaplen - L2 header.
  * return 0 if no change, 1 if change, -1 on error.
  */
 
 int
-untrunc_packet(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr, 
+untrunc_packet(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr,
         u_char **pktdata, ipv4_hdr_t *ip_hdr, ipv6_hdr_t *ip6_hdr)
 {
     int l2len;
@@ -507,7 +507,7 @@ untrunc_packet(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr,
         if (! tcpedit->mtu_truncate)
             return(0);
     }
-    
+
     if ((l2len = layer2len(tcpedit)) < 0) {
         tcpedit_seterr(tcpedit, "Non-sensical layer 2 length: %d", l2len);
         return -1;
@@ -559,14 +559,14 @@ untrunc_packet(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr,
         if (pkthdr->len > (uint32_t)(tcpedit->mtu + l2len)) {
             /* first truncate the packet */
             pkthdr->len = pkthdr->caplen = l2len + tcpedit->mtu;
-            
+
             /* if ip_hdr exists, update the length */
             if (ip_hdr != NULL) {
                 ip_hdr->ip_len = htons(tcpedit->mtu);
             } else if (ip6_hdr != NULL) {
                 ip6_hdr->ip_len = htons(tcpedit->mtu - sizeof(*ip6_hdr));
             } else {
-                 /* for non-IP frames, don't try to fix checksums */  
+                 /* for non-IP frames, don't try to fix checksums */
                 chksum = 0;
                 goto done;
             }
@@ -585,7 +585,7 @@ done:
 
 /**
  * rewrites an IPv4 packet's TTL based on the rules
- * return 0 if no change, 1 if changed 
+ * return 0 if no change, 1 if changed
  */
 int
 rewrite_ipv4_ttl(tcpedit_t *tcpedit, ipv4_hdr_t *ip_hdr)
@@ -597,7 +597,7 @@ rewrite_ipv4_ttl(tcpedit_t *tcpedit, ipv4_hdr_t *ip_hdr)
     /* make sure there's something to edit */
     if (ip_hdr == NULL || tcpedit->ttl_mode == false)
         return(0);
-        
+
     oldval = (uint16_t)ip_hdr->ip_ttl;
     switch(tcpedit->ttl_mode) {
     case TCPEDIT_TTL_MODE_SET:
@@ -680,7 +680,7 @@ remap_ipv4(tcpedit_t *tcpedit, tcpr_cidr_t *cidr, const uint32_t original)
 
     assert(tcpedit);
     assert(cidr);
-    
+
     if (cidr->family != AF_INET) {
         return 0;
     }
@@ -703,7 +703,7 @@ remap_ipv4(tcpedit_t *tcpedit, tcpr_cidr_t *cidr, const uint32_t original)
 
     /* merge the network portion and ip portions */
     result = network ^ ipaddr;
-    
+
     /* return the result in network byte order */
     return(htonl(result));
 }
@@ -795,7 +795,7 @@ rewrite_ipv4l3(tcpedit_t *tcpedit, ipv4_hdr_t *ip_hdr, tcpr_dir_t direction,
         cidrmap1 = tcpedit->cidrmap2;
         cidrmap2 = tcpedit->cidrmap1;
     }
-    
+
 
     /* loop through the cidrmap to rewrite */
     do {
@@ -947,8 +947,8 @@ rewrite_ipv6l3(tcpedit_t *tcpedit, ipv6_hdr_t *ip6_hdr, tcpr_dir_t direction,
  * Randomize the IP addresses in an ARP packet based on the user seed
  * return 0 if no change, or 1 for a change
  */
-int 
-randomize_iparp(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr, 
+int
+randomize_iparp(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr,
         u_char *pktdata, int datalink, const int l3len)
 {
     arp_hdr_t *arp_hdr ;
@@ -1048,7 +1048,7 @@ rewrite_iparp(tcpedit_t *tcpedit, arp_hdr_t *arp_hdr, int cache_mode)
         return(0);
 
     /*
-     * must be IPv4 and request or reply 
+     * must be IPv4 and request or reply
      * Do other op codes use the same subheader stub?
      * If so we won't need to check the op code.
      */
@@ -1068,7 +1068,7 @@ rewrite_iparp(tcpedit_t *tcpedit, arp_hdr_t *arp_hdr, int cache_mode)
 #else
         ip2 = (uint32_t *)add_hdr;
 #endif
-        
+
 
         /* loop through the cidrmap to rewrite */
         do {
@@ -1084,7 +1084,7 @@ rewrite_iparp(tcpedit_t *tcpedit, arp_hdr_t *arp_hdr, int cache_mode)
                     memcpy(ip2, &newip, 4);
                     didsrc = 1;
                 }
-            } 
+            }
             /* else it's an arp reply */
             else {
                 if ((!diddst) && ip_in_cidr(cidrmap2->from, *ip2)) {
@@ -1110,20 +1110,20 @@ rewrite_iparp(tcpedit_t *tcpedit, arp_hdr_t *arp_hdr, int cache_mode)
              */
             if ((! (diddst && didsrc)) &&
                 (! ((cidrmap1->next == NULL) && (cidrmap2->next == NULL)))) {
-                
+
                 /* increment our ptr's if possible */
                 if (cidrmap1->next != NULL)
                     cidrmap1 = cidrmap1->next;
-                
+
                 if (cidrmap2->next != NULL)
                     cidrmap2 = cidrmap2->next;
-                
+
             } else {
                 loop = 0;
             }
 
         } while (loop);
-        
+
     } else {
         warn("ARP packet isn't for IPv4!  Can't rewrite IP's");
     }
@@ -1139,11 +1139,11 @@ static int
 is_unicast_ipv4(tcpedit_t *tcpedit, uint32_t ip)
 {
     assert(tcpedit);
-   
+
     /* multicast/broadcast is 224.0.0.0 or greater */
     if (ntohl(ip) > 3758096384)
         return 0;
-        
+
     return 1;
 }
 

@@ -143,7 +143,7 @@ tcpedit_set_fixcsum(tcpedit_t *tcpedit, bool value)
 /**
  * \brief should we remove the EFCS from the frame?
  */
-int 
+int
 tcpedit_set_efcs(tcpedit_t *tcpedit, bool value)
 {
     assert(tcpedit);
@@ -152,7 +152,7 @@ tcpedit_set_efcs(tcpedit_t *tcpedit, bool value)
 }
 
 /**
- * \brief set the IPv4 TTL mode 
+ * \brief set the IPv4 TTL mode
  */
 int
 tcpedit_set_ttl_mode(tcpedit_t *tcpedit, tcpedit_ttl_mode value)
@@ -174,7 +174,7 @@ tcpedit_set_ttl_value(tcpedit_t *tcpedit, uint8_t value)
 }
 
 /**
- * \brief set the IPv4 TOS/DiffServ/ECN byte value 
+ * \brief set the IPv4 TOS/DiffServ/ECN byte value
  */
 int
 tcpedit_set_tos(tcpedit_t *tcpedit, uint8_t value)
@@ -185,7 +185,7 @@ tcpedit_set_tos(tcpedit_t *tcpedit, uint8_t value)
 }
 
 /**
- * \brief set the IPv6 Traffic Class byte value 
+ * \brief set the IPv6 Traffic Class byte value
  */
 int
 tcpedit_set_tclass(tcpedit_t *tcpedit, uint8_t value)
@@ -196,7 +196,7 @@ tcpedit_set_tclass(tcpedit_t *tcpedit, uint8_t value)
 }
 
 /**
- * \brief set the IPv6 Flow Label 20bit value 
+ * \brief set the IPv6 Flow Label 20bit value
  */
 int
 tcpedit_set_flowlabel(tcpedit_t *tcpedit, uint32_t value)
@@ -224,7 +224,7 @@ tcpedit_set_seed(tcpedit_t *tcpedit)
 /**
  * Set the MTU of the frames
  */
-int 
+int
 tcpedit_set_mtu(tcpedit_t *tcpedit, int value)
 {
     assert(tcpedit);
@@ -267,7 +267,7 @@ tcpedit_set_cidrmap_s2c(tcpedit_t *tcpedit, char *value)
 {
     assert(tcpedit);
 
-    tcpedit->rewrite_ip = true;    
+    tcpedit->rewrite_ip = true;
     if (! parse_cidr_map(&tcpedit->cidrmap1, value)) {
         tcpedit_seterr(tcpedit, "Unable to parse: %s", value);
         return TCPEDIT_ERROR;
@@ -297,7 +297,7 @@ tcpedit_set_cidrmap_c2s(tcpedit_t *tcpedit, char *value)
 }
 
 /**
- * Rewrite the Source IP of any packet 
+ * Rewrite the Source IP of any packet
  */
 int
 tcpedit_set_srcip_map(tcpedit_t *tcpedit, char *value)
@@ -313,7 +313,7 @@ tcpedit_set_srcip_map(tcpedit_t *tcpedit, char *value)
 }
 
 /**
- * Rewrite the Destination IP of any packet 
+ * Rewrite the Destination IP of any packet
  */
 int
 tcpedit_set_dstip_map(tcpedit_t *tcpedit, char *value)
@@ -339,7 +339,7 @@ tcpedit_set_port_map(tcpedit_t *tcpedit, char *value)
     assert(tcpedit);
 
     if (! parse_portmap(&tcpedit->portmap, value)) {
-        tcpedit_seterr(tcpedit, 
+        tcpedit_seterr(tcpedit,
                 "Unable to parse portmap: %s", value);
         return TCPEDIT_ERROR;
     }

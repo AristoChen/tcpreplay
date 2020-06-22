@@ -29,9 +29,9 @@
 #include "loop.h"
 #include "../dlt_null/null.h"
 
-/* 
+/*
  * Basically, DLT_LOOP and DLT_NULL are the same thing except that the PF_ value
- * in the header is always network byte order in DLT_LOOP and host byte order 
+ * in the header is always network byte order in DLT_LOOP and host byte order
  * in DLT_NULL.  So since DLT_NULL has to handle both big & little endian values
  * we just send all DLT_LOOP processing over there
  */
@@ -51,7 +51,7 @@ static uint16_t dlt_value = DLT_LOOP;
  * - Add the plugin to the context's plugin chain
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_loop_register(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
@@ -82,28 +82,28 @@ dlt_loop_register(tcpeditdlt_t *ctx)
     plugin->plugin_get_layer3 = dlt_null_get_layer3;
     plugin->plugin_merge_layer3 = dlt_null_merge_layer3;
     plugin->plugin_get_mac = dlt_null_get_mac;
-    
+
     /* add it to the available plugin list */
     return tcpedit_dlt_addplugin(ctx, plugin);
 }
 
 /*
  * Initializer function.  This function is called only once, if and only if
- * this plugin will be utilized.  Remember, if you need to keep track of any state, 
+ * this plugin will be utilized.  Remember, if you need to keep track of any state,
  * store it in your plugin->config, not a global!
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_loop_init(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
     assert(ctx);
-    
+
     if ((plugin = tcpedit_dlt_getplugin(ctx, dlt_value)) == NULL) {
         tcpedit_seterr(ctx->tcpedit, "Unable to initialize unregistered plugin %s", dlt_name);
         return TCPEDIT_ERROR;
     }
-    
+
     return TCPEDIT_OK; /* success */
 }
 

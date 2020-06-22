@@ -271,7 +271,7 @@ TRY_SEND_AGAIN:
             /* write the pkthdr + packet data all at once */
             retcode = write(sp->handle.fd, (void *)buffer, sizeof(struct pcap_pkthdr) + len);
             retcode -= sizeof(struct pcap_pkthdr); /* only record packet bytes we sent, not pcap data too */
-                    
+
             if (retcode < 0 && !sp->abort) {
                 switch(errno) {
                     case EAGAIN:
@@ -386,7 +386,7 @@ TRY_SEND_AGAIN:
         case SP_TYPE_LIBPCAP:
 #if (defined HAVE_PCAP_INJECT || defined HAVE_PCAP_SENDPACKET)
 #if defined HAVE_PCAP_INJECT
-            /* 
+            /*
              * pcap methods don't seem to support ENOBUFS, so we just straight fail
              * is there a better way???
              */
@@ -414,8 +414,8 @@ TRY_SEND_AGAIN:
                 }
             }
 #if defined HAVE_PCAP_SENDPACKET
-            /* 
-             * pcap_sendpacket returns 0 on success, not the packet length! 
+            /*
+             * pcap_sendpacket returns 0 on success, not the packet length!
              * hence, we have to fix retcode to be more standard on success
              */
             if (retcode == 0)
@@ -482,7 +482,7 @@ sendpacket_open(const char *device, char *errbuf, tcpr_dir_t direction,
     errbuf[0] = '\0';
     /* khial is universal */
     if (stat(device, &sdata) == 0) {
-        if (((sdata.st_mode & S_IFMT) == S_IFCHR)) { 
+        if (((sdata.st_mode & S_IFMT) == S_IFCHR)) {
 
             sp = sendpacket_open_khial(device, errbuf);
 
@@ -614,7 +614,7 @@ sendpacket_close(sendpacket_t *sp)
             break;
 
         case SP_TYPE_LIBDNET:
-#ifdef HAVE_LIBDNET            
+#ifdef HAVE_LIBDNET
             eth_close(sp->handle.ldnet);
 #endif
             break;
@@ -657,7 +657,7 @@ sendpacket_get_hwaddr(sendpacket_t *sp)
 
     if (sp->handle_type == SP_TYPE_KHIAL) {
         addr = sendpacket_get_hwaddr_khial(sp);
-    } else {    
+    } else {
 #if defined HAVE_PF_PACKET
         addr = sendpacket_get_hwaddr_pf(sp);
 #elif defined HAVE_BPF
@@ -728,8 +728,8 @@ sendpacket_open_pcap(const char *device, char *errbuf)
     sp->handle.pcap = pcap;
 
 #ifdef BIOCSHDRCMPLT
-    /* 
-     * Only systems using BPF on the backend need this... 
+    /*
+     * Only systems using BPF on the backend need this...
      * other systems don't have ioctl and will get compile errors.
      */
     fd = pcap_get_selectable_fd(pcap);
@@ -757,7 +757,7 @@ sendpacket_get_hwaddr_pcap(sendpacket_t *sp)
 /**
  * Inner sendpacket_open() method for using libdnet
  */
-static sendpacket_t * 
+static sendpacket_t *
 sendpacket_open_libdnet(const char *device, char *errbuf)
 {
     eth_t *ldnet;
@@ -774,8 +774,8 @@ sendpacket_open_libdnet(const char *device, char *errbuf)
     sp = (sendpacket_t *)safe_malloc(sizeof(sendpacket_t));
     strlcpy(sp->device, device, sizeof(sp->device));
     sp->handle.ldnet = ldnet;
-    sp->handle_type = SP_TYPE_LIBDNET;    
-    return sp;    
+    sp->handle_type = SP_TYPE_LIBDNET;
+    return sp;
 }
 
 /**
@@ -932,7 +932,7 @@ sendpacket_open_pf(const char *device, char *errbuf)
 
     if (ioctl(mysocket, SIOCGIFHWADDR, &ifr) < 0) {
         close(mysocket);
-        snprintf(errbuf, SENDPACKET_ERRBUF_SIZE, "Error getting hardware type: %s", 
+        snprintf(errbuf, SENDPACKET_ERRBUF_SIZE, "Error getting hardware type: %s",
                 strerror(errno));
         return NULL;
     }
@@ -977,7 +977,7 @@ sendpacket_open_pf(const char *device, char *errbuf)
     mtu = ifr.ifr_ifru.ifru_mtu;
 
     /* Init TX ring for sp->handle.fd socket */
-    if ((sp->tx_ring = txring_init(sp->handle.fd, mtu)) == 0) { 
+    if ((sp->tx_ring = txring_init(sp->handle.fd, mtu)) == 0) {
         snprintf(errbuf, SENDPACKET_ERRBUF_SIZE, "txring_init: %s", strerror(errno));
         close(mysocket);
         return NULL;
@@ -1276,7 +1276,7 @@ sendpacket_get_method(sendpacket_t *sp)
 }
 
 /**
- * Opens a character device for injecting packets directly into 
+ * Opens a character device for injecting packets directly into
  * your kernel via a custom driver
  */
 static sendpacket_t *

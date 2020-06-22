@@ -81,7 +81,7 @@ reset_suspend_time()
 /**
  * \brief suspend signal handler
  *
- * Signal handler for signal SIGUSR1. SIGSTOP cannot be 
+ * Signal handler for signal SIGUSR1. SIGSTOP cannot be
  * caught, so SIGUSR1 is caught and it throws SIGSTOP.
  */
 static void

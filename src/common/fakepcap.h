@@ -35,7 +35,7 @@
 #endif
 
 /*
- * libpcap < 0.8 don't have pcap_datalink_val_to_description() 
+ * libpcap < 0.8 don't have pcap_datalink_val_to_description()
  * and pcap_datalink_val_to_name()
  */
 #ifndef HAVE_DLT_VAL_TO_DESC

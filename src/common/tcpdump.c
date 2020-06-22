@@ -218,7 +218,7 @@ tcpdump_open(tcpdump_t *tcpdump, pcap_t *pcap)
      if (debug >= 5) {
          dbgx(5, "Opening tcpdump debug file: %s", tcpdump->debugfile);
 
-         if ((tcpdump->debugfd = open(tcpdump->debugfile, O_WRONLY|O_CREAT|O_TRUNC, 
+         if ((tcpdump->debugfd = open(tcpdump->debugfile, O_WRONLY|O_CREAT|O_TRUNC,
                 S_IREAD|S_IWRITE|S_IRGRP|S_IROTH)) == -1) {
             errx(-1, "Error opening tcpdump debug file: %s\n%s", tcpdump->debugfile, strerror(errno));
         }
@@ -303,7 +303,7 @@ tcpdump_open(tcpdump_t *tcpdump, pcap_t *pcap)
 }
 
 /**
- * shutdown tcpdump 
+ * shutdown tcpdump
  */
 void
 tcpdump_close(tcpdump_t *tcpdump)
@@ -328,8 +328,8 @@ tcpdump_close(tcpdump_t *tcpdump)
     PARENT_WRITE_FD = 0;
 }
 
-/** 
- * forcefully kill tcpdump 
+/**
+ * forcefully kill tcpdump
  */
 void
 tcpdump_kill(tcpdump_t *tcpdump)
@@ -358,10 +358,10 @@ tcpdump_fill_in_options(char *opt)
 
     /* zero out our options_vec for execv() */
     memset(options_vec, '\0', sizeof(options_vec));
-    
+
     /* first arg should be the binary (by convention) */
     options_vec[0] = TCPDUMP_BINARY;
-       
+
 
     /* prep args */
     memset(options, '\0', 256);
@@ -373,16 +373,16 @@ tcpdump_fill_in_options(char *opt)
 
 
     /* process args */
-    
+
     /* process the first argument */
     arg = strtok_r(options, OPT_DELIM, &token);
     arglen = strlen(arg) + 2; /* -{arg}\0 */
     newarg = (char *)safe_malloc(arglen);
-    strlcat(newarg, "-", arglen); 
+    strlcat(newarg, "-", arglen);
     strlcat(newarg, arg, arglen);
     options_vec[i++] = newarg;
 
-    /* process the remaining args 
+    /* process the remaining args
      * note that i < OPTIONS_VEC_SIZE - 1
      * because: a) we need to add '-' as an option to the end
      * b) because the array has to be null terminated
@@ -406,7 +406,7 @@ tcpdump_fill_in_options(char *opt)
 
 
 /**
- * can we exec the given file? 
+ * can we exec the given file?
  */
 static int
 can_exec(const char *filename)

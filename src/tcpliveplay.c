@@ -17,47 +17,47 @@
  * establishes who the 'client' is and the 'server' is based on who initiates the SYN compares each 
  * packet's source ip against the ip of the 'client' (which is named local in the code) and the 'server' 
  * (remote) to correctly determine the expected seqs & acks. This also extracts the MACs of both local 
- * and remote clients. The program is also capable of rewriting the local and remote MAC & IP so that 
- * the packets are properly replayed when used on live networks. The current state of the program is that 
- * it takes in a pcap file on command line and writes a new file called "newfile.pcap" which is used thereafter 
- * for the rest of the program's calculations and set expectations. The program prints out a summary of the 
- * new file on the command prompt. Once the program is done, "newfile.pcap" is cleaned up. 
+ * and remote clients. The program is also capable of rewriting the local and remote MAC & IP so that
+ * the packets are properly replayed when used on live networks. The current state of the program is that
+ * it takes in a pcap file on command line and writes a new file called "newfile.pcap" which is used thereafter
+ * for the rest of the program's calculations and set expectations. The program prints out a summary of the
+ * new file on the command prompt. Once the program is done, "newfile.pcap" is cleaned up.
 
  * Program Design Overview:
- * Before replaying the packets, the program reads in the pcap file that contains one tcp flow, 
- * and takes the SEQ/ACK #s. 
- * Based on the number of packets, a struct schedule of events are is set up. Based on 
- * the SEQ/ACK numbers read in, the schedule is setup to be relative numbers rather than 
- * absolute. This is done by starting with local packets, subtracting the first SEQ (which 
- * is that of the first SYN packet) from all the SEQs of the local packets then by subtracting 
- * the first remote sequence (which is that of the SYN-ACK packet) from all the local packet's 
- * ACKs. After the local side SEQ/ACK numbers are fixed to relative numbers, 'lseq_adjust' 
- * the locally generated random number for the SYN packet gets added to all the local SEQs 
- * to adjust the schedule to absolute number configuration. Then doing the remote side is similar 
- * except we only fix the remote ACKs based on our locally generated random number because 
- * we do not yet know the remote random number of the SYN-ACK packet. This means that at this 
- * point the entire schedule of local packets and remote packets are set in such a way that 
- * the local packets' SEQ's are absolute, but ACKs are relative and the remote packets' SEQ's are 
- * relative but ACKs as absolute. Once this is set, the replay starts by sending first SYN packet. 
+ * Before replaying the packets, the program reads in the pcap file that contains one tcp flow,
+ * and takes the SEQ/ACK #s.
+ * Based on the number of packets, a struct schedule of events are is set up. Based on
+ * the SEQ/ACK numbers read in, the schedule is setup to be relative numbers rather than
+ * absolute. This is done by starting with local packets, subtracting the first SEQ (which
+ * is that of the first SYN packet) from all the SEQs of the local packets then by subtracting
+ * the first remote sequence (which is that of the SYN-ACK packet) from all the local packet's
+ * ACKs. After the local side SEQ/ACK numbers are fixed to relative numbers, 'lseq_adjust'
+ * the locally generated random number for the SYN packet gets added to all the local SEQs
+ * to adjust the schedule to absolute number configuration. Then doing the remote side is similar
+ * except we only fix the remote ACKs based on our locally generated random number because
+ * we do not yet know the remote random number of the SYN-ACK packet. This means that at this
+ * point the entire schedule of local packets and remote packets are set in such a way that
+ * the local packets' SEQ's are absolute, but ACKs are relative and the remote packets' SEQ's are
+ * relative but ACKs as absolute. Once this is set, the replay starts by sending first SYN packet.
  * If the remote host's acks with the SYN packet_SEQ+1 then we save their remote SEQ and adjust
- * the local ACKs and remote SEQs in the struct schedule to be absolute based this remote SEQ. 
- * From this point on forward, we know or 'expect' what the remote host's ACKs and SEQs are exactly. 
- * If the remote host responds correctly as we expect (checking the schedule position expectation 
- * as packets are received) then we proceed in the schedule whether the next event is to send a local 
- * packet or wait for a remote packet to arrive. 
+ * the local ACKs and remote SEQs in the struct schedule to be absolute based this remote SEQ.
+ * From this point on forward, we know or 'expect' what the remote host's ACKs and SEQs are exactly.
+ * If the remote host responds correctly as we expect (checking the schedule position expectation
+ * as packets are received) then we proceed in the schedule whether the next event is to send a local
+ * packet or wait for a remote packet to arrive.
 
  *
  * Usage: tcpliveplay <eth0/eth1> <file.pcap> <Destination IP [1.2.3.4]> <Destination mac [0a:1b:2c:3d:4e:5f]> <'random' dst port OR specify dport #>
  *
- * Example:  
+ * Example:
  * yhsiam@yhsiam-VirtualBox:~$ tcpliveplay eth0 test1.pcap 192.168.1.4 52:57:01:11:31:92 random
- * 
- * NOTE: This program may not completely replay the packets due to the remote host responding in an unexpected 
- * fashion such as responding with packets never seen in the given *.pcap file or coupling packets together, etc. 
- * if you have any suggestion on improving this software or if you find any bugs, please let me know at my 
- * email: tcpliveplay@gmail.com 
- * 
- * Past Contributors (Last contributed May 4, 2012): Andrew Leonard & Beau Luck 
+ *
+ * NOTE: This program may not completely replay the packets due to the remote host responding in an unexpected
+ * fashion such as responding with packets never seen in the given *.pcap file or coupling packets together, etc.
+ * if you have any suggestion on improving this software or if you find any bugs, please let me know at my
+ * email: tcpliveplay@gmail.com
+ *
+ * Past Contributors (Last contributed May 4, 2012): Andrew Leonard & Beau Luck
  *
  */
 
@@ -78,7 +78,7 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <sys/ioctl.h>
-#include <sys/types.h>    
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <net/if.h>
 #include <string.h>
@@ -101,11 +101,11 @@ int debug = 0;
 
 pcap_t *set_live_filter(char *dev, input_addr* hostip, unsigned int port);
 pcap_t *set_offline_filter(char* file);
-pcap_t *live_handle; 
+pcap_t *live_handle;
 u_char *recvd_pkt_data = NULL;
-unsigned int buf_write_index = 0; 
-unsigned int sched_index = 0; 
-unsigned int initial_rseq=0; 
+unsigned int buf_write_index = 0;
+unsigned int sched_index = 0;
+unsigned int initial_rseq=0;
 sendpacket_t *sp;
 unsigned int seed = 0;
 
@@ -113,21 +113,21 @@ const u_char *packet_keeper_rprev = NULL;
 ether_hdr *etherhdr_rprev = NULL; /*g for Global header pointers used in pcap_loop callback*/
 tcp_hdr *tcphdr_rprev = NULL;
 ipv4_hdr *iphdr_rprev = NULL;
-unsigned int size_payload_prev = 0; 
-unsigned int finack_rindex = 0; 
+unsigned int size_payload_prev = 0;
+unsigned int finack_rindex = 0;
 unsigned int acked_index = 0;
-unsigned int diff_payload_index = 0; 
-bool different_payload = false;  
+unsigned int diff_payload_index = 0;
+bool different_payload = false;
 volatile sig_atomic_t keep_going = 1;
 int random_port();
-unsigned int pkts_scheduled=0;   /* packet counter */ 
-struct tcp_sched* sched = NULL; 
+unsigned int pkts_scheduled=0;   /* packet counter */
+struct tcp_sched* sched = NULL;
 void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet);
 void catch_alarm (int sig);
 int iface_addrs(char* iface, input_addr* ip, struct mac_addr* mac);
 int extmac(char* new_rmac_ptr, struct mac_addr* new_remotemac);
 int extip(char *ip_string, input_addr* new_remoteip);
-int rewrite(input_addr* new_remoteip, struct mac_addr* new_remotemac, input_addr* myip, struct mac_addr* mymac, char* file, unsigned int new_src_port); 
+int rewrite(input_addr* new_remoteip, struct mac_addr* new_remotemac, input_addr* myip, struct mac_addr* mymac, char* file, unsigned int new_src_port);
 int setup_sched(struct tcp_sched* sched);
 int relative_sched(struct tcp_sched* sched, u_int32_t first_rseq, int num_packets);
 int fix_all_checksum_liveplay(ipv4_hdr *iphdr);
@@ -136,25 +136,25 @@ int do_checksum_liveplay(u_int8_t *data, int proto, int len);
 int do_checksum_math_liveplay(u_int16_t *data, int len);
 
 /**
- * This is the main function of the program that handles calling other 
+ * This is the main function of the program that handles calling other
  * functions to implemented the needed operations of the replay functionaily.
  */
-int 
-main(int argc, char **argv) 
+int
+main(int argc, char **argv)
 {
     unsigned int k;
     int num_packets = 0;
     static const char random_strg[] = "random";
 
     char* iface = argv[1];
-    char* new_rmac_ptr; 
-    char* new_rip_ptr; 
-    input_addr new_remoteip; 
+    char* new_rmac_ptr;
+    char* new_rip_ptr;
+    input_addr new_remoteip;
     struct mac_addr new_remotemac;
     input_addr myip;
     struct mac_addr mymac;
     int new_src_port = 0;
-    unsigned int retransmissions = 0; 
+    unsigned int retransmissions = 0;
     pcap_t *local_handle;
     char errbuf[PCAP_ERRBUF_SIZE];
     char ebuf[SENDPACKET_ERRBUF_SIZE];
@@ -163,9 +163,9 @@ main(int argc, char **argv)
     optionProcess(&tcpliveplayOptions, argc, argv); /*Process AutoOpts for manpage options*/
 
     if((argc < 5) || (argv[1]==NULL) || (argv[2]==NULL) || (argv[3]==NULL) || (argv[4]==NULL) || (argv[5]==NULL)){
-        printf("ERROR: Incorrect Usage!\n"); 
+        printf("ERROR: Incorrect Usage!\n");
         printf("Usage: tcpliveplay <eth0/eth1> <file.pcap> <Destination IP [1.2.3.4]> <Destination mac [0a:1b:2c:3d:4e:5f]> <specify 'random' or specific port#>\n");
-        printf("Example:\n    yhsiam@yhsiam-VirtualBox:~$ sudo tcpliveplay eth0 test1.pcap 192.168.1.4 52:57:01:11:31:92 random\n\n"); 
+        printf("Example:\n    yhsiam@yhsiam-VirtualBox:~$ sudo tcpliveplay eth0 test1.pcap 192.168.1.4 52:57:01:11:31:92 random\n\n");
         exit(0);
     }
 
@@ -197,7 +197,7 @@ main(int argc, char **argv)
 
     /* Extract new Remote MAC & IP inputed at command line */
     new_rmac_ptr= argv[4];
-    new_rip_ptr = argv[3]; 
+    new_rip_ptr = argv[3];
 
     /* These function setup the MAC & IP addresses in the mac_addr & in_addr structs */
     if (extmac(new_rmac_ptr, &new_remotemac) == ERROR)
@@ -267,48 +267,48 @@ main(int argc, char **argv)
     while(sched_index<pkts_scheduled){
         if(!keep_going) { /*Check the timeout variable */
             printf("\n======================================================================\n");
-            printf("= TIMEOUT:: Remote host is not responding. You may have crashed      =\n"); 
+            printf("= TIMEOUT:: Remote host is not responding. You may have crashed      =\n");
             printf("= the host you replayed these packets against OR the packet sequence =\n");
             printf("= changed since the capture was taken resulting in differing         =\n");
             printf("= expectations. Closing replay...                                    =\n");
-            printf("======================================================================\n\n"); 
-            break; 
-        } 
+            printf("======================================================================\n\n");
+            break;
+        }
         /* tcphdr_rprev carries the last remote tcp header */
         if(tcphdr_rprev == NULL) {
             //printf("FIRST PASS!\n");
-        } 
+        }
         /* Check if received RST or RST-ACK flagged packets*/
         else if((tcphdr_rprev->th_flags==TH_RST) || (tcphdr_rprev->th_flags==(TH_RST|TH_ACK))){
             printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-            printf("+ ERROR:: Remote host has requested to RESET the connection.   +\n"); 
-            printf("+ Closing replay...                                            +\n");
-            printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n"); 
-            break; 
-        }
-        /*Check if received earlier FIN-ACK than expected 
-        else if((sched_index-1 < finack_rindex) && (tcphdr_rprev->th_flags==(TH_FIN|TH_ACK))){
-            printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-            printf("+ ERROR:: Remote host sent an earlier FIN-ACK than expected.   +\n"); 
+            printf("+ ERROR:: Remote host has requested to RESET the connection.   +\n");
             printf("+ Closing replay...                                            +\n");
             printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n");
-            return; 
+            break;
+        }
+        /*Check if received earlier FIN-ACK than expected
+        else if((sched_index-1 < finack_rindex) && (tcphdr_rprev->th_flags==(TH_FIN|TH_ACK))){
+            printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+            printf("+ ERROR:: Remote host sent an earlier FIN-ACK than expected.   +\n");
+            printf("+ Closing replay...                                            +\n");
+            printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n");
+            return;
         } */
         /* Do the following if we receive a packet that ACKs for the same ACKing of next packet */
         else if((tcphdr_rprev->th_seq==htonl(sched[sched_index].exp_rseq)) && (tcphdr_rprev->th_ack==htonl(sched[sched_index].exp_rack)) && (size_payload_prev>0)){
             printf("Received Remote Packet...............	[%u]\n",sched_index+1);
             printf("Skipping Packet......................	[%u] to Packet [%u]\n",sched_index+1, sched_index+2);
             printf("Next Remote Packet Expectation met.\nProceeding in replay...\n");
-            sched_index++;   
-        } 
+            sched_index++;
+        }
         /* Do the following if payload does not meet expectation and re-attempt with the remote host for 3 tries*/
         else if(different_payload){
             printf("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-            printf("+ WARNING: Remote host is not meeting packet size expectations.               +\n"); 
+            printf("+ WARNING: Remote host is not meeting packet size expectations.               +\n");
             printf("+ for packet %-u. Application layer data differs from capture being replayed.  +\n", diff_payload_index+1);
-            printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n"); 
+            printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n");
             printf("Requesting retransmission.\n Proceeding...\n");
-            different_payload = false;  
+            different_payload = false;
         }
 
         /* Local Packets */
@@ -316,10 +316,10 @@ main(int argc, char **argv)
             /*Reset alarm timeout*/
             alarm (ALARM_TIMEOUT);
             printf("Sending Local Packet...............	[%u]\n", sched_index + 1);
-          
-            /* edit each packet tcphdr before sending based on the schedule*/  
-            if(sched_index>0){ 
-                sched[sched_index].tcphdr->th_ack = htonl(sched[sched_index].curr_lack); 
+
+            /* edit each packet tcphdr before sending based on the schedule*/
+            if(sched_index>0){
+                sched[sched_index].tcphdr->th_ack = htonl(sched[sched_index].curr_lack);
                 fix_all_checksum_liveplay(sched[sched_index].iphdr);
             }
 
@@ -330,7 +330,7 @@ main(int argc, char **argv)
                 printf("+ responding as expected. 3 resend attempts are a maximum.     +\n");
                 printf("+ Closing replay...                                            +\n");
                 printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n");
-                break; 
+                break;
             }
 
             /* If nothing goes wrong, then send the packet scheduled to be sent, then proceed in the schedule */
@@ -350,25 +350,25 @@ main(int argc, char **argv)
     } /* end of main while loop*/
 
 
-    pcap_breakloop(live_handle); 
+    pcap_breakloop(live_handle);
 
     pcap_close(live_handle);
     sendpacket_close(sp);  /* Close Send socket*/
     remove("newfile.pcap"); /* Remote the rewritten file that was created*/
 
     for(k=0; k<pkts_scheduled; k++){
-        retransmissions+=sched[k].sent_counter; 
+        retransmissions+=sched[k].sent_counter;
     }
 
 
     /* User Debug Result Printouts*/
     if(sched_index==pkts_scheduled){
-        printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"); 
+        printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
         printf("~ CONGRATS!!! You have successfully Replayed your pcap file '%s'\n", argv[2]);
         printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
     }
     else {
-        printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"); 
+        printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
         printf("~ Unfortunately an error has occurred  halting the replay of\n");
         printf("~ the pcap file '%s'. Please see error above for details...\n", argv[2]);
         printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
@@ -385,12 +385,12 @@ main(int argc, char **argv)
     free(sched);
     restore_stdin();
     return 0;
-} 
+}
 /*end of main() function*/
 
 
 /**
- * This function serves as a timer alarm 
+ * This function serves as a timer alarm
  */
 void
 catch_alarm (int sig){
@@ -421,8 +421,8 @@ random_port()
 
 
 /**
- * This function sets up the scheduled local ACK and Remote SEQ to be relative numbers, 
- * While it sets up the local SEQs and remote ACKs to be absolute within the schedule. 
+ * This function sets up the scheduled local ACK and Remote SEQ to be relative numbers,
+ * While it sets up the local SEQs and remote ACKs to be absolute within the schedule.
  */
 
 int
@@ -444,7 +444,7 @@ relative_sched(struct tcp_sched* sched, u_int32_t first_rseq, int num_packets){
             fix_all_checksum_liveplay(sched[i].iphdr); /* Fix the checksum */
             sched[i].exp_rseq = sched[i].exp_rseq - first_rseq;
             sched[i].exp_rack = sched[i].exp_rack - first_lseq;
-            sched[i].exp_rack = sched[i].exp_rack + lseq_adjust;  
+            sched[i].exp_rack = sched[i].exp_rack + lseq_adjust;
         }
         else if(sched[i].remote){
             sched[i].exp_rseq = sched[i].exp_rseq - first_rseq; /* Fix expected remote SEQ to be relative */
@@ -461,14 +461,14 @@ relative_sched(struct tcp_sched* sched, u_int32_t first_rseq, int num_packets){
 /**
  * This function sets up the schedule for the rest of the program
  * extracting all the needed information from the given pcap file
- * and coping into memory (into a struct format) 
+ * and coping into memory (into a struct format)
  *
  */
 
 int
 setup_sched(struct tcp_sched* sched){
 
-    input_addr sip, dip;  /* Source & Destination IP */ 
+    input_addr sip, dip;  /* Source & Destination IP */
     input_addr local_ip, remote_ip;    /* ip address of client and server*/
     pcap_t *local_handle;
     const u_char *packet;       /* The actual packet */
@@ -479,15 +479,15 @@ setup_sched(struct tcp_sched* sched){
     bool local = false;
     unsigned int i = 0;
 
-    local_ip.byte1=0; 
-    local_ip.byte2=0; 
-    local_ip.byte3=0; 
-    local_ip.byte4=0; 
+    local_ip.byte1=0;
+    local_ip.byte2=0;
+    local_ip.byte3=0;
+    local_ip.byte4=0;
 
-    remote_ip.byte1=0; 
-    remote_ip.byte2=0; 
-    remote_ip.byte3=0; 
-    remote_ip.byte4=0; 
+    remote_ip.byte1=0;
+    remote_ip.byte2=0;
+    remote_ip.byte3=0;
+    remote_ip.byte4=0;
 
     char errbuf[PCAP_ERRBUF_SIZE];
 
@@ -524,7 +524,7 @@ setup_sched(struct tcp_sched* sched){
             return 0;
         }
         tcphdr = (tcp_hdr *)(sched[i].packet_ptr + SIZE_ETHERNET + size_ip);
-        size_tcp = tcphdr->th_off*4; 
+        size_tcp = tcphdr->th_off*4;
         if (size_tcp < 20) {
             printf("ERROR: Invalid TCP header length: %u bytes\n", size_tcp);
             return 0;
@@ -557,38 +557,38 @@ setup_sched(struct tcp_sched* sched){
         /* Setup rest of Schedule, parameter by parameter */
         /* Refer to header file for details on each of the parameters */
 
-        sched[i].etherhdr = etherhdr; 
-        sched[i].iphdr = iphdr; 
-        sched[i].tcphdr = tcphdr; 
-        sched[i].size_ip = size_ip; 
-        sched[i].size_tcp = size_tcp;  
+        sched[i].etherhdr = etherhdr;
+        sched[i].iphdr = iphdr;
+        sched[i].tcphdr = tcphdr;
+        sched[i].size_ip = size_ip;
+        sched[i].size_tcp = size_tcp;
         sched[i].size_payload = size_payload;
-        sched[i].sent_counter = 0; 
+        sched[i].sent_counter = 0;
 
         /* Do the following only for the first packet (SYN)*/
         if(i==0){
             sched[i].length_last_ldata = 0;
-            sched[i].length_curr_ldata = 0; 
+            sched[i].length_curr_ldata = 0;
             sched[i].length_last_rdata = 0;
-            sched[i].length_curr_rdata = 0; 
-            sched[i].local = true; 
+            sched[i].length_curr_rdata = 0;
+            sched[i].local = true;
             sched[i].remote = false;
-            sched[i].curr_lseq = ntohl(sched[i].tcphdr->th_seq); 
+            sched[i].curr_lseq = ntohl(sched[i].tcphdr->th_seq);
             sched[i].curr_lack = 0;
             sched[i].exp_rseq = 0;  /* Keep track of previous remote seq & ack #s*/
             sched[i].exp_rack = 0;
 
-        } 
+        }
 
         /* Local Packet operations */
         else if(local){
-            sched[i].length_last_ldata = sched[i-1].length_curr_ldata; 
-            sched[i].length_curr_ldata = size_payload; 
+            sched[i].length_last_ldata = sched[i-1].length_curr_ldata;
+            sched[i].length_curr_ldata = size_payload;
             sched[i].length_last_rdata = sched[i-1].length_curr_rdata;
-            sched[i].length_curr_rdata = 0; 
-            sched[i].local = true; 
+            sched[i].length_curr_rdata = 0;
+            sched[i].local = true;
             sched[i].remote = false;
-            sched[i].curr_lseq = ntohl(sched[i].tcphdr->th_seq); 
+            sched[i].curr_lseq = ntohl(sched[i].tcphdr->th_seq);
             sched[i].curr_lack = ntohl(sched[i].tcphdr->th_ack);
             sched[i].exp_rseq = sched[i-1].exp_rseq;    /* Keep track of previous remote seq & ack #s*/
             sched[i].exp_rack = sched[i-1].exp_rack;
@@ -598,12 +598,12 @@ setup_sched(struct tcp_sched* sched){
         /* Remote Packet operations */
         else if(remote){
             sched[i].length_last_ldata = sched[i-1].length_curr_ldata;
-            sched[i].length_curr_ldata = 0; 
+            sched[i].length_curr_ldata = 0;
             sched[i].length_last_rdata = sched[i-1].length_curr_rdata;
-            sched[i].length_curr_rdata = size_payload; 
-            sched[i].local = false; 
+            sched[i].length_curr_rdata = size_payload;
+            sched[i].local = false;
             sched[i].remote = true;
-            sched[i].curr_lseq = sched[i-1].curr_lseq; 
+            sched[i].curr_lseq = sched[i-1].curr_lseq;
             sched[i].curr_lack = sched[i-1].curr_lack;
             sched[i].exp_rseq = ntohl(sched[i].tcphdr->th_seq);     /* Keep track of previous remote seq & ack #s*/
             sched[i].exp_rack = ntohl(sched[i].tcphdr->th_ack);
@@ -623,12 +623,12 @@ setup_sched(struct tcp_sched* sched){
 
 
 /**
- * This function returns a pcap_t for the live traffic handler which 
+ * This function returns a pcap_t for the live traffic handler which
  * filters out traffic other than TCP
  *
  */
 
-pcap_t* 
+pcap_t*
 set_live_filter(char *dev, input_addr* hostip, unsigned int port)
 {
     pcap_t *handle = NULL;          /* Session handle */
@@ -674,11 +674,11 @@ set_live_filter(char *dev, input_addr* hostip, unsigned int port)
 
 
 /**
- * This function returns a pcap_t for the savedfile traffic handler which 
+ * This function returns a pcap_t for the savedfile traffic handler which
  * filters out traffic other than TCP
  *
  */
-pcap_t* 
+pcap_t*
 set_offline_filter(char* file)
 {
     pcap_t *handle;                 /* Session handle */
@@ -689,7 +689,7 @@ set_offline_filter(char* file)
 
 
     /* Open savedfile  */
-    handle = pcap_open_offline(file, errbuf); 
+    handle = pcap_open_offline(file, errbuf);
     if (handle == NULL) {
         fprintf(stderr, "Couldn't open file %s\n", errbuf);
         return handle;
@@ -713,7 +713,7 @@ set_offline_filter(char* file)
  * This is the callback function for pcap_loop
  * This function is called every time we receive a remote packet
  */
-void 
+void
 got_packet(_U_ u_char *args, _U_ const struct pcap_pkthdr *header,
         const u_char *packet)
 {
@@ -738,7 +738,7 @@ got_packet(_U_ u_char *args, _U_ const struct pcap_pkthdr *header,
         printf("ERROR: Invalid TCP header length: %u bytes\n", size_tcp);
         return;
     }
-    size_payload = ntohs(iphdr->ip_len) - (size_ip + (size_tcp));    
+    size_payload = ntohs(iphdr->ip_len) - (size_ip + (size_tcp));
 
 
     flags = tcphdr->th_flags;
@@ -748,13 +748,13 @@ got_packet(_U_ u_char *args, _U_ const struct pcap_pkthdr *header,
         printf("Received Remote Packet...............	[%u]\n", sched_index + 1);
         printf("Remote Pakcet Expectation met.\nProceeding in replay....\n");
         //printf("SYN-ACKed Random SEQ set!\n");
-        initial_rseq = ntohl(tcphdr->th_seq); 
+        initial_rseq = ntohl(tcphdr->th_seq);
         //printf("initial_rseq: %u\n", initial_rseq);
         /* After we receiving the first SYN-ACK, then adjust the entire sched to be absolute rather than relative #s*/
         sched[1].exp_rseq = sched[1].exp_rseq + initial_rseq;
         for(j = 2; j<pkts_scheduled; j++){ /* Based on correctly receiving the random SEQ from the SYN-ACK packet, do the following:*/
             if(sched[j].local){ /* Set local ACKs for entire sched to be absolute #s*/
-                sched[j].curr_lack = sched[j].curr_lack + initial_rseq; 
+                sched[j].curr_lack = sched[j].curr_lack + initial_rseq;
             }
             else if(sched[j].remote){ /* Set remote SEQs for entire sched to be absolute #s*/
                 sched[j].exp_rseq = sched[j].exp_rseq + initial_rseq;
@@ -771,31 +771,31 @@ got_packet(_U_ u_char *args, _U_ const struct pcap_pkthdr *header,
 
 
     /* Handle Remote Packet Loss */
-    if(sched[sched_index].exp_rack > ntohl(tcphdr->th_ack)) { 
+    if(sched[sched_index].exp_rack > ntohl(tcphdr->th_ack)) {
         //printf("Remote Packet Loss! Resending Lost packet\n");
         sched_index=acked_index; /* Reset the schedule index back to the last correctly ACKed packet */
-        //printf("ACKED Index = %d\n", acked_index); 
+        //printf("ACKED Index = %d\n", acked_index);
         while(!sched[sched_index].local){
-            sched_index++; 
+            sched_index++;
         }
-        return; 
-    } 
+        return;
+    }
 
     /* Handle Local Packet Loss <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<COME BACK TO THIS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
-    else if((sched[sched_index].exp_rseq  < ntohl(tcphdr->th_seq)) && sched[sched_index].remote){ 
+    else if((sched[sched_index].exp_rseq  < ntohl(tcphdr->th_seq)) && sched[sched_index].remote){
         /* Resend immediate previous LOCAL packet */
         printf("Local Packet Loss! Resending Lost packet >> DupACK Issued!\n");
         sched_index=acked_index; /* Reset the schedule index back to the last correctly ACKed packet */
         /*sched[sched_index].sent_counter=0; Reset the re-transmission counter for this ACKed packet?*/
-        //printf("ACKED Index = %d\n", acked_index); 
+        //printf("ACKED Index = %d\n", acked_index);
         while(!sched[sched_index].local){
-            sched_index++; 
+            sched_index++;
         }
-        return; 
-    } 
+        return;
+    }
 
     /* No Packet Loss... Proceed Normally (if expectations are met!) */
-    else if((tcphdr->th_seq==htonl(sched[sched_index].exp_rseq)) && 
+    else if((tcphdr->th_seq==htonl(sched[sched_index].exp_rseq)) &&
             (tcphdr->th_ack==htonl(sched[sched_index].exp_rack))){
         printf("Received Remote Packet...............	[%d]\n",sched_index+1);
         /* Handles differing payload size and does not trigger on unnecessary ACK + window update issues*/
@@ -818,13 +818,13 @@ got_packet(_U_ u_char *args, _U_ const struct pcap_pkthdr *header,
         printf("Remote Packet Expectation met.\nProceeding in replay....\n");
         sched_index++;
         acked_index = sched_index; /*Keep track correctly ACKed packet index*/
-    } 
+    }
 
     /* Global variable to keep tack of last received packet info */
-    packet_keeper_rprev = packet;  
-    etherhdr_rprev = etherhdr; 
+    packet_keeper_rprev = packet;
+    etherhdr_rprev = etherhdr;
     tcphdr_rprev = tcphdr;
-    iphdr_rprev = iphdr; 
+    iphdr_rprev = iphdr;
     size_payload_prev = size_payload;
 
 
@@ -837,11 +837,11 @@ got_packet(_U_ u_char *args, _U_ const struct pcap_pkthdr *header,
  * This function prints out the ip address, given an in_addr struct pointer
  *
  */
-void 
+void
 printip(input_addr* IP)
 {
 
-    printf("[%d.%d.%d.%d]\n", IP->byte1, IP->byte2, IP->byte3, IP->byte4);  
+    printf("[%d.%d.%d.%d]\n", IP->byte1, IP->byte2, IP->byte3, IP->byte4);
 
     return;
 }
@@ -850,24 +850,24 @@ printip(input_addr* IP)
  * This function prints out the mac address, given a mac_addr struct pointer
  *
  */
-void 
+void
 printmac(struct mac_addr* MAC)
 {
 
-    printf("[%x:%x:%x:%x:%x:%x]\n", MAC->byte1, MAC->byte2, MAC->byte3, MAC->byte4, MAC->byte5, MAC->byte6);  
+    printf("[%x:%x:%x:%x:%x:%x]\n", MAC->byte1, MAC->byte2, MAC->byte3, MAC->byte4, MAC->byte5, MAC->byte6);
 
     return;
 }
 
 
 /**
- * This function compares two IPs, 
+ * This function compares two IPs,
  * returns 1 if match with local ip
  * returns 2 if matches with remote ip
  * returns 0 if no match
  *
  */
-int 
+int
 compip(input_addr* lip, input_addr* rip, input_addr* pkgip)
 {
 
@@ -931,11 +931,11 @@ done:
 
 
 /**
- * This function rewrites the IPs and MACs of a given packet, 
- * creates a newfile.pcap. It returns the number of packets of the newfile. 
+ * This function rewrites the IPs and MACs of a given packet,
+ * creates a newfile.pcap. It returns the number of packets of the newfile.
  * This function only starts rewriting the newfile once it sees the first
- * SYN packet. This is so that the first packet in the newfile is always 
- * the first packet to be sent. 
+ * SYN packet. This is so that the first packet in the newfile is always
+ * the first packet to be sent.
  */
 int
 rewrite(input_addr* new_remoteip, struct mac_addr* new_remotemac, input_addr* myip, struct mac_addr* mymac, char* file, unsigned int new_src_port)
@@ -943,12 +943,12 @@ rewrite(input_addr* new_remoteip, struct mac_addr* new_remotemac, input_addr* my
 
     char *newfile = "newfile.pcap";
     int pkt_counter;
-    input_addr local_ip; 
-    input_addr remote_ip; 
+    input_addr local_ip;
+    input_addr remote_ip;
     const u_char *packet;
     struct pcap_pkthdr *header;
     pcap_dumper_t *dumpfile;
-    input_addr sip;  /* Source IP */ 
+    input_addr sip;  /* Source IP */
     int local_packets = 0;
     bool initstep1 = false;  /* keep track of successful handshake step */
     bool warned = false;
@@ -963,7 +963,7 @@ rewrite(input_addr* new_remoteip, struct mac_addr* new_remotemac, input_addr* my
     remote_ip.byte3=0;
     remote_ip.byte4=0;
 
-    pcap_t *pcap = set_offline_filter(file); 
+    pcap_t *pcap = set_offline_filter(file);
     if (!pcap){
         char ErrBuff [1024];
         fprintf (stderr, "Cannot open PCAP file '%s' for reading\n", file);
@@ -992,7 +992,7 @@ rewrite(input_addr* new_remoteip, struct mac_addr* new_remotemac, input_addr* my
         }
         etherhdr = (ether_hdr*)(packet);
         iphdr = (ipv4_hdr *)(packet + SIZE_ETHERNET);
-        size_ip = iphdr->ip_hl << 2; 
+        size_ip = iphdr->ip_hl << 2;
         if (size_ip < 20) {
             printf("ERROR: Invalid IP header length: %u bytes\n", size_ip);
             return ERROR;
@@ -1010,8 +1010,8 @@ rewrite(input_addr* new_remoteip, struct mac_addr* new_remotemac, input_addr* my
 
         /* set IPs who's local and who's remote based on the SYN flag */
         if(flags == TH_SYN){
-            local_ip = iphdr->ip_src; 
-            remote_ip = iphdr->ip_dst; 
+            local_ip = iphdr->ip_src;
+            remote_ip = iphdr->ip_dst;
             initstep1 = true; /* This flag is set to signify the first encounter of the SYN within the pacp*/
         }
 
@@ -1080,7 +1080,7 @@ rewrite(input_addr* new_remoteip, struct mac_addr* new_remotemac, input_addr* my
 }
 
 /**
- * This function extracts the MAC address (from command line format 
+ * This function extracts the MAC address (from command line format
  * and sets the mac_addr struct)
  *
  */
@@ -1104,7 +1104,7 @@ extmac(char* new_rmac_ptr, struct mac_addr* new_remotemac)
 }
 
 /**
- * This function extracts the IP address (from command line format 
+ * This function extracts the IP address (from command line format
  * and sets the in_addr struct)
  *
  */
@@ -1116,7 +1116,7 @@ extip(char *ip_string, input_addr* new_remoteip)
     if (inet_aton(ip_string, &addr) == 0)
         return ERROR;
 
-#if defined( WORDS_BIGENDIAN ) 
+#if defined( WORDS_BIGENDIAN )
     new_remoteip->byte4 = (unsigned char)addr.s_addr & 0xff;
     new_remoteip->byte3 = (unsigned char)(addr.s_addr >> 8) & 0xff;
     new_remoteip->byte2 = (unsigned char)(addr.s_addr >> 16) & 0xff;
@@ -1134,13 +1134,13 @@ extip(char *ip_string, input_addr* new_remoteip)
 
 /**
  * This function calls all the checksum function given the IP Header
- * and edits the checksums fixing them appropriately 
+ * and edits the checksums fixing them appropriately
  *
  */
 int
 fix_all_checksum_liveplay(ipv4_hdr *iphdr){
 
-    int ret1 = 0, ret2 = 0; 
+    int ret1 = 0, ret2 = 0;
 
     /*Calculate TCP Checksum*/
     ret2 = do_checksum_liveplay((u_char *) iphdr,iphdr->ip_p, ntohs(iphdr->ip_len) - (iphdr->ip_hl << 2));
@@ -1165,9 +1165,9 @@ fix_all_checksum_liveplay(ipv4_hdr *iphdr){
 /*[copied from Aaron Turnor's checksum.c, but omitting tcpedit_t structs] */
 /*[The following functions have been slightly modified to be integrated with tcpliveplay code structure] */
 
-/** 
+/**
  * This code re-calcs the IP and Layer 4 checksums
- * the IMPORTANT THING is that the Layer 4 header 
+ * the IMPORTANT THING is that the Layer 4 header
  * is contiguous in memory after *ip_hdr we're actually
  * writing to the layer 4 header via the ip_hdr ptr.
  * (Yes, this sucks, but that's the way libnet works, and

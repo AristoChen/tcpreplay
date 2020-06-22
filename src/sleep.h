@@ -24,11 +24,11 @@
 
 #ifdef HAVE_SYS_SELECT  /* According to POSIX 1003.1-2001 */
 #include <sys/select.h>
-#endif                   
+#endif
 
 #include <sys/types.h>
 #include <sys/time.h>
-#include <unistd.h>     
+#include <unistd.h>
 #include <errno.h>
 #include <string.h>
 #ifdef HAVE_SYS_EVENT
@@ -86,7 +86,7 @@ gettimeofday_sleep(sendpacket_t *sp _U_, struct timespec *nap,
 
     TIMESPEC_TO_TIMEVAL(&nap_for, nap);
     timeradd(now, &nap_for, &sleep_until);
-    
+
     while (!sp->abort) {
 #ifdef HAVE_NETMAP
         if (flush && timercmp(now, &last, !=)) {
@@ -108,13 +108,13 @@ gettimeofday_sleep(sendpacket_t *sp _U_, struct timespec *nap,
 }
 
 #ifdef HAVE_SELECT
-/* 
- * sleep for some time using the select() call timeout method.   This is 
+/*
+ * sleep for some time using the select() call timeout method.   This is
  * highly portable for sub-second sleeping, but only for about 1msec
  * resolution which is pretty much useless for our needs.  Keeping it here
  * for future reference
  */
-static inline void 
+static inline void
 select_sleep(sendpacket_t *sp _U_, const struct timespec *nap,
         struct timeval *now,  bool flush _U_)
 {
@@ -141,7 +141,7 @@ select_sleep(sendpacket_t *sp _U_, const struct timespec *nap,
 /*
  * ioport_sleep() only works on Intel 32-bit and quite possibly only Linux.
  * But the basic idea is to write to the IO Port 0x80 which should
- * take exactly 1usec regardless of the CPU speed and without 
+ * take exactly 1usec regardless of the CPU speed and without
  * calling a sleep method which allows the kernel to service another thread
  * Idea stolen from: http://c-faq.com/osdep/sd25.html
  */

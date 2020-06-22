@@ -61,7 +61,7 @@ byte2bits(char byte, char *bitstring) {
  * simple function to read in a cache file created with tcpprep this let's us
  * be really damn fast in picking an interface to send the packet out returns
  * number of cache entries read
- * 
+ *
  * now also checks for the cache magic and version
  */
 
@@ -105,7 +105,7 @@ read_cache(char **cachedata, const char *cachefile, char **comment)
     *comment = (char *)safe_malloc(header.comment_len + 1);
 
     dbgx(1, "Comment length: %d", header.comment_len);
-    
+
     if ((read_size = read(cachefd, *comment, header.comment_len)) < 0)
         errx(-1, "Error reading comment: %s", strerror(errno));
 
@@ -117,9 +117,9 @@ read_cache(char **cachedata, const char *cachefile, char **comment)
 
     /* malloc our cache block */
     header.num_packets = ntohll(header.num_packets);
-    header.packets_per_byte = ntohs(header.packets_per_byte);    
+    header.packets_per_byte = ntohs(header.packets_per_byte);
     cache_size = header.num_packets / header.packets_per_byte;
-        
+
     /* deal with any remainder, because above division is integer */
     if (header.num_packets % header.packets_per_byte)
       cache_size ++;
@@ -132,7 +132,7 @@ read_cache(char **cachedata, const char *cachefile, char **comment)
     *cachedata = (char *)safe_malloc(cache_size);
 
     /* read in the cache */
-    if ((COUNTER)(read_size = read(cachefd, *cachedata, cache_size)) 
+    if ((COUNTER)(read_size = read(cachefd, *cachedata, cache_size))
             != cache_size)
         errx(-1, "Cache data length (%zu bytes) doesn't match "
             "cache header (" COUNTER_SPEC " bytes)", read_size, cache_size);
@@ -146,11 +146,11 @@ read_cache(char **cachedata, const char *cachefile, char **comment)
 
 /**
  * writes out the cache file header, comment and then the
- * contents of *cachedata to out_file and then returns the number 
+ * contents of *cachedata to out_file and then returns the number
  * of cache entries written
  */
 COUNTER
-write_cache(tcpr_cache_t * cachedata, const int out_file, COUNTER numpackets, 
+write_cache(tcpr_cache_t * cachedata, const int out_file, COUNTER numpackets,
     char *comment)
 {
     tcpr_cache_t *mycache = NULL;
@@ -188,10 +188,10 @@ write_cache(tcpr_cache_t * cachedata, const int out_file, COUNTER numpackets,
     if (comment != NULL) {
         written = write(out_file, comment, strlen(comment));
         dbgx(1, "Wrote %zu bytes of comment", written);
-        
+
         if (written != (ssize_t)strlen(comment))
             errx(-1, "Only wrote %zu of %zu bytes of the comment!\n%s",
-                 written, strlen(comment), 
+                 written, strlen(comment),
                  written == -1 ? strerror(errno) : "");
     }
 
@@ -290,7 +290,7 @@ add_cache(tcpr_cache_t ** cachedata, const int send, const tcpr_dir_t interface)
         u_char *byte;
 
         index = (lastcache->packets - 1) / (COUNTER)CACHE_PACKETS_PER_BYTE;
-        bit = (((lastcache->packets - 1) % (COUNTER)CACHE_PACKETS_PER_BYTE) * 
+        bit = (((lastcache->packets - 1) % (COUNTER)CACHE_PACKETS_PER_BYTE) *
                (COUNTER)CACHE_BITS_PER_PACKET) + 1;
         dbgx(3, "Bit: %d", bit);
 
@@ -312,7 +312,7 @@ add_cache(tcpr_cache_t ** cachedata, const int send, const tcpr_dir_t interface)
         }
 
 #ifdef DEBUG
-        /* 
+        /*
          * only build the byte string when not in debug mode since
          * the calculation is a bit expensive
          */
@@ -343,7 +343,7 @@ check_cache(char *cachedata, COUNTER packetid)
         err(-1, "packetid must be > 0");
 
     index = (packetid - 1) / (COUNTER)CACHE_PACKETS_PER_BYTE;
-    bit = (uint32_t)(((packetid - 1) % (COUNTER)CACHE_PACKETS_PER_BYTE) * 
+    bit = (uint32_t)(((packetid - 1) % (COUNTER)CACHE_PACKETS_PER_BYTE) *
         (COUNTER)CACHE_BITS_PER_PACKET) + 1;
 
 #ifdef DEBUG

@@ -35,17 +35,17 @@ typedef struct {
 
 } %{plugin}_extra_t;
 
-/* 
- * FIXME: structure to hold any data in the tcpeditdlt_plugin_t->config 
- * Things like: 
+/*
+ * FIXME: structure to hold any data in the tcpeditdlt_plugin_t->config
+ * Things like:
  * - Parsed user options
  * - State between packets
  * - Note, you should only use this for the encoder function, decoder functions should place
- *   "extra" data parsed from the packet in the tcpeditdlt_t->decoded_extra buffer since that 
+ *   "extra" data parsed from the packet in the tcpeditdlt_t->decoded_extra buffer since that
  *   is available to any encoder plugin.
  */
 typedef struct {
-    
+
 } %{plugin}_config_t;
 
 

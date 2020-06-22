@@ -104,7 +104,7 @@ tcpedit_packet(tcpedit_t *tcpedit, struct pcap_pkthdr **pkthdr,
 
     tcpedit->runtime.packetnum++;
 
-    dbgx(3, "packet " COUNTER_SPEC " caplen %d", 
+    dbgx(3, "packet " COUNTER_SPEC " caplen %d",
             tcpedit->runtime.packetnum, (*pkthdr)->caplen);
 
     /*
@@ -122,14 +122,14 @@ tcpedit_packet(tcpedit_t *tcpedit, struct pcap_pkthdr **pkthdr,
     }
 
     src_dlt = tcpedit_dlt_src(tcpedit->dlt_ctx);
-    
+
     /* not everything has a L3 header, so check for errors.  returns proto in network byte order */
     if ((l2proto = tcpedit_dlt_proto(tcpedit->dlt_ctx, src_dlt, packet, (*pkthdr)->caplen)) < 0) {
         dbg(2, "Packet has no L3+ header");
     } else {
         dbgx(2, "Layer 3 protocol type is: 0x%04x", ntohs(l2proto));
     }
-        
+
     /* rewrite Layer 2 */
     if ((pktlen = tcpedit_dlt_process(tcpedit->dlt_ctx, pktdata, (*pkthdr)->caplen, direction)) == TCPEDIT_ERROR)
         errx(-1, "%s", tcpedit_geterr(tcpedit));
@@ -144,7 +144,7 @@ tcpedit_packet(tcpedit_t *tcpedit, struct pcap_pkthdr **pkthdr,
     lendiff = pktlen - (*pkthdr)->caplen;
     (*pkthdr)->caplen += lendiff;
     (*pkthdr)->len += lendiff;
-    
+
     dst_dlt = tcpedit_dlt_dst(tcpedit->dlt_ctx);
     l2len = tcpedit_dlt_l2len(tcpedit->dlt_ctx, dst_dlt, packet, (*pkthdr)->caplen);
     if (l2len == -1)
@@ -239,15 +239,15 @@ tcpedit_packet(tcpedit_t *tcpedit, struct pcap_pkthdr **pkthdr,
         if (tcpedit->tclass > -1) {
             /* calculate the bits */
             tclass = tcpedit->tclass << 20;
-            
+
             /* convert our 4 bytes to an int */
             memcpy(&ipflags, &ip6_hdr->ip_flags, 4);
-            
+
             /* strip out the old tclass bits */
             ipflags = ntohl(ipflags) & 0xf00fffff;
 
             /* add the tclass bits back */
-            ipflags += tclass; 
+            ipflags += tclass;
             ipflags = htonl(ipflags);
             memcpy(&ip6_hdr->ip_flags, &ipflags, 4);
         }
@@ -286,7 +286,7 @@ tcpedit_packet(tcpedit_t *tcpedit, struct pcap_pkthdr **pkthdr,
             return TCPEDIT_ERROR;
         needtorecalc += retval;
     }
-    
+
     /* rewrite IP addresses in IPv4/IPv6 or ARP */
     if (tcpedit->rewrite_ip) {
         /* IP packets */
@@ -317,7 +317,7 @@ tcpedit_packet(tcpedit_t *tcpedit, struct pcap_pkthdr **pkthdr,
     if (tcpedit->seed) {
         /* IPv4 Packets */
         if (ip_hdr != NULL) {
-            if ((retval = randomize_ipv4(tcpedit, *pkthdr, packet, 
+            if ((retval = randomize_ipv4(tcpedit, *pkthdr, packet,
                     ip_hdr, (*pkthdr)->caplen - l2len)) < 0)
                 return TCPEDIT_ERROR;
 
@@ -329,11 +329,11 @@ tcpedit_packet(tcpedit_t *tcpedit, struct pcap_pkthdr **pkthdr,
         /* ARP packets */
         } else if (l2proto == htons(ETHERTYPE_ARP)) {
             if (direction == TCPR_DIR_C2S) {
-                if (randomize_iparp(tcpedit, *pkthdr, packet, 
+                if (randomize_iparp(tcpedit, *pkthdr, packet,
                         tcpedit->runtime.dlt1, (*pkthdr)->caplen - l2len) < 0)
                     return TCPEDIT_ERROR;
             } else {
-                if (randomize_iparp(tcpedit, *pkthdr, packet, 
+                if (randomize_iparp(tcpedit, *pkthdr, packet,
                         tcpedit->runtime.dlt2, (*pkthdr)->caplen - l2len) < 0)
                     return TCPEDIT_ERROR;
             }
@@ -383,7 +383,7 @@ int
 tcpedit_init(tcpedit_t **tcpedit_ex, int dlt)
 {
     tcpedit_t *tcpedit;
-    
+
     *tcpedit_ex = safe_malloc(sizeof(tcpedit_t));
     tcpedit = *tcpedit_ex;
 
@@ -399,11 +399,11 @@ tcpedit_init(tcpedit_t **tcpedit_ex, int dlt)
     tcpedit->tclass = -1;
     tcpedit->flowlabel = -1;
     tcpedit->editdir = TCPEDIT_EDIT_BOTH;
- 
+
     memset(&(tcpedit->runtime), 0, sizeof(tcpedit_runtime_t));
     tcpedit->runtime.dlt1 = dlt;
     tcpedit->runtime.dlt2 = dlt;
-    
+
     dbgx(1, "Input file (1) datalink type is %s",
             pcap_datalink_val_to_name(dlt));
 
@@ -470,17 +470,17 @@ __tcpedit_seterr(tcpedit_t *tcpedit, const char *func, const int line, const cha
 {
     va_list ap;
     char errormsg[TCPEDIT_ERRSTR_LEN];
-    
+
     assert(tcpedit);
 
     va_start(ap, fmt);
     if (fmt != NULL) {
-        (void)vsnprintf(errormsg, 
+        (void)vsnprintf(errormsg,
               (TCPEDIT_ERRSTR_LEN - 1), fmt, ap);
     }
 
     va_end(ap);
-    
+
     snprintf(tcpedit->runtime.errstr, (TCPEDIT_ERRSTR_LEN -1), "From %s:%s() line %d:\n%s",
         file, func, line, errormsg);
 }
@@ -511,14 +511,14 @@ tcpedit_setwarn(tcpedit_t *tcpedit, const char *fmt, ...)
         (void)vsnprintf(tcpedit->runtime.warnstr, (TCPEDIT_ERRSTR_LEN - 1), fmt, ap);
 
     va_end(ap);
-        
+
 }
 
 /**
  * \brief Checks the given error code and does the right thing
- * 
+ *
  * Generic function which checks the TCPEDIT_* error code
- * and always returns OK or ERROR.  For warnings, prints the 
+ * and always returns OK or ERROR.  For warnings, prints the
  * warning message and returns OK.  For any other value, fails with
  * an assert.
  *
@@ -527,19 +527,19 @@ tcpedit_setwarn(tcpedit_t *tcpedit, const char *fmt, ...)
 int
 tcpedit_checkerror(tcpedit_t *tcpedit, const int rcode, const char *prefix) {
     assert(tcpedit);
-    
+
     switch (rcode) {
         case TCPEDIT_OK:
         case TCPEDIT_ERROR:
             return rcode;
             break;
-        
+
         case TCPEDIT_SOFT_ERROR:
             if (prefix != NULL) {
                 fprintf(stderr, "Error %s: %s\n", prefix, tcpedit_geterr(tcpedit));
             } else {
                 fprintf(stderr, "Error: %s\n", tcpedit_geterr(tcpedit));
-            }            
+            }
             break;
         case TCPEDIT_WARN:
             if (prefix != NULL) {
@@ -549,7 +549,7 @@ tcpedit_checkerror(tcpedit_t *tcpedit, const int rcode, const char *prefix) {
             }
             return TCPEDIT_OK;
             break;
-            
+
         default:
             assert(0 == 1); /* this should never happen! */
             break;
@@ -558,8 +558,8 @@ tcpedit_checkerror(tcpedit_t *tcpedit, const int rcode, const char *prefix) {
 }
 
 /**
- * \brief Cleans up after ourselves.  Return 0 on success. 
- * 
+ * \brief Cleans up after ourselves.  Return 0 on success.
+ *
  * Clean up after ourselves, but does not actually free the ptr.
  */
 int
@@ -597,12 +597,12 @@ tcpedit_l3data(tcpedit_t *tcpedit, tcpedit_coder code, u_char *packet, const int
 /**
  * Returns the layer 3 type, often encoded as the layer2.proto field
  */
-int 
+int
 tcpedit_l3proto(tcpedit_t *tcpedit, tcpedit_coder code, const u_char *packet, const int pktlen)
 {
     int result = 0;
     if (code == BEFORE_PROCESS) {
-        result = tcpedit_dlt_proto(tcpedit->dlt_ctx, tcpedit->dlt_ctx->decoder->dlt, packet, pktlen);        
+        result = tcpedit_dlt_proto(tcpedit->dlt_ctx, tcpedit->dlt_ctx->decoder->dlt, packet, pktlen);
     } else {
         result = tcpedit_dlt_proto(tcpedit->dlt_ctx, tcpedit->dlt_ctx->encoder->dlt, packet, pktlen);
     }

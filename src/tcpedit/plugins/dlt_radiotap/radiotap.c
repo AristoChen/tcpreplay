@@ -36,7 +36,7 @@ static uint16_t dlt_value = DLT_IEEE802_11_RADIO;
 
 /*
  * The Radiotap header plugin utilizes the 802.11 plugin internally to do all the work
- * we just eat the radiotap header itself and pass the resulting buffer to the ieee80211 
+ * we just eat the radiotap header itself and pass the resulting buffer to the ieee80211
  * plugin.
  */
 
@@ -53,7 +53,7 @@ static u_char *dlt_radiotap_get_80211(tcpeditdlt_t *ctx, const u_char *packet, c
  * - Add the plugin to the context's plugin chain
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_radiotap_register(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
@@ -72,8 +72,8 @@ dlt_radiotap_register(tcpeditdlt_t *ctx)
     /* set the prefix name of our plugin.  This is also used as the prefix for our options */
     plugin->name = safe_strdup(dlt_name);
 
-    /* 
-     * Point to our functions, note, you need a function for EVERY method.  
+    /*
+     * Point to our functions, note, you need a function for EVERY method.
      * Even if it is only an empty stub returning success.
      */
     plugin->plugin_init = dlt_radiotap_init;
@@ -94,11 +94,11 @@ dlt_radiotap_register(tcpeditdlt_t *ctx)
 
 /*
  * Initializer function.  This function is called only once, if and only if
- * this plugin will be utilized.  Remember, if you need to keep track of any state, 
+ * this plugin will be utilized.  Remember, if you need to keep track of any state,
  * store it in your plugin->config, not a global!
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_radiotap_init(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
@@ -125,7 +125,7 @@ dlt_radiotap_init(tcpeditdlt_t *ctx)
  * Unless you allocated some memory in dlt_radiotap_init(), this is just an stub.
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_radiotap_cleanup(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
@@ -141,7 +141,7 @@ dlt_radiotap_cleanup(tcpeditdlt_t *ctx)
         ctx->decoded_extra = NULL;
         ctx->decoded_extra_size = 0;
     }
-        
+
     if (plugin->config != NULL) {
         safe_free(plugin->config);
         plugin->config = NULL;
@@ -157,13 +157,13 @@ dlt_radiotap_cleanup(tcpeditdlt_t *ctx)
  * bit mask.
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_radiotap_parse_opts(tcpeditdlt_t *ctx)
 {
     assert(ctx);
 
     /* we have none */
-    
+
     return TCPEDIT_OK; /* success */
 }
 
@@ -177,7 +177,7 @@ dlt_radiotap_parse_opts(tcpeditdlt_t *ctx)
  * - ctx->decoded_extra
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_radiotap_decode(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
 {
     int radiolen, rcode;
@@ -187,7 +187,7 @@ dlt_radiotap_decode(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
 
     if (pktlen < (int)sizeof(radiotap_hdr_t))
         return TCPEDIT_ERROR;
-    
+
     radiolen = dlt_radiotap_l2len(ctx, packet, pktlen);
     data = dlt_radiotap_get_80211(ctx, packet, pktlen, radiolen);
     if (!data)
@@ -195,7 +195,7 @@ dlt_radiotap_decode(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
 
     /* ieee80211 decoder fills out everything */
     rcode = dlt_ieee80211_decode(ctx, data, pktlen - radiolen);
-    
+
     /* need to override the ieee802.11 l2 length result */
     ctx->l2len = dlt_radiotap_80211_l2len(ctx, packet, pktlen);
     return (ctx->l2len > 0) ? rcode : TCPEDIT_ERROR;
@@ -205,13 +205,13 @@ dlt_radiotap_decode(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
  * Function to encode the layer 2 header back into the packet.
  * Returns: total packet len or TCPEDIT_ERROR
  */
-int 
+int
 dlt_radiotap_encode(tcpeditdlt_t *ctx, u_char *packet, _U_ int pktlen,
         _U_ tcpr_dir_t dir)
 {
     assert(ctx);
     assert(packet);
-    
+
     tcpedit_seterr(ctx->tcpedit, "%s", "DLT_IEEE802_11_RADIO plugin does not support packet encoding");
     return TCPEDIT_ERROR;
 }
@@ -221,7 +221,7 @@ dlt_radiotap_encode(tcpeditdlt_t *ctx, u_char *packet, _U_ int pktlen,
  * Make sure you return this in host byte order since all the comparisons will be
  * against the ETHERTYPE_* values which are oddly in host byte order.
  */
-int 
+int
 dlt_radiotap_proto(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
 {
     int radiolen;
@@ -248,10 +248,10 @@ dlt_radiotap_get_layer3(tcpeditdlt_t *ctx, u_char *packet, const int pktlen)
 {
     int radiolen, l2len;
     u_char *data;
-    
+
     assert(ctx);
     assert(packet);
-    
+
     radiolen = dlt_radiotap_l2len(ctx, packet, pktlen);
     data = dlt_radiotap_get_80211(ctx, packet, pktlen, radiolen);
     l2len = dlt_ieee80211_l2len(ctx, data, pktlen - radiolen);
@@ -269,7 +269,7 @@ dlt_radiotap_merge_layer3(tcpeditdlt_t *ctx, u_char *packet, const int pktlen, u
 {
     int radiolen, l2len;
     u_char *data;
-    
+
     assert(ctx);
     assert(packet);
     assert(l3data);
@@ -283,13 +283,13 @@ dlt_radiotap_merge_layer3(tcpeditdlt_t *ctx, u_char *packet, const int pktlen, u
 /*
  * return a static pointer to the source/destination MAC address
  * return NULL on error/address doesn't exist
- */    
+ */
 u_char *
 dlt_radiotap_get_mac(tcpeditdlt_t *ctx, tcpeditdlt_mac_type_t mac, const u_char *packet, const int pktlen)
 {
     int radiolen;
     u_char *data;
-    
+
     assert(ctx);
     assert(packet);
 
@@ -304,7 +304,7 @@ dlt_radiotap_get_mac(tcpeditdlt_t *ctx, tcpeditdlt_mac_type_t mac, const u_char 
 
 
 
-/* 
+/*
  * return the length of the L2 header of the current packet
  */
 int
@@ -323,7 +323,7 @@ dlt_radiotap_l2len(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
     return (int)radiolen;
 }
 
-/* 
+/*
  * return the length of the L2 header w/ 802.11 header of the current packet
  */
 int
@@ -331,7 +331,7 @@ dlt_radiotap_80211_l2len(tcpeditdlt_t *ctx, const u_char *packet, const int pktl
 {
     int radiolen, res;
     u_char *data;
-    
+
     radiolen = dlt_radiotap_l2len(ctx, packet, pktlen);
     if (radiolen == -1)
         return TCPEDIT_ERROR;
@@ -345,14 +345,14 @@ dlt_radiotap_80211_l2len(tcpeditdlt_t *ctx, const u_char *packet, const int pktl
     return radiolen;
 }
 
-tcpeditdlt_l2addr_type_t 
+tcpeditdlt_l2addr_type_t
 dlt_radiotap_l2addr_type(void)
 {
     /* FIXME: return the tcpeditdlt_l2addr_type_t value that this DLT uses */
     return ETHERNET;
 }
 
-/* 
+/*
  * returns a buffer to the 802.11 header in the packet.
  * This does an optimization of only doing a memcpy() once per packet
  * since we track which was the last packet # we copied.

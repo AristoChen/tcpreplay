@@ -284,7 +284,7 @@ tcpprep_set_tcpdump(tcpprep_t *ctx, tcpdump_t *value)
 /**
  * \brief Returns a string describing the last error.
  *
- * Value when the last call does not result in an error is undefined 
+ * Value when the last call does not result in an error is undefined
  * (may be NULL, may be garbage)
  */
 char *
@@ -297,7 +297,7 @@ tcpprep_geterr(tcpprep_t *ctx)
 /**
  * \brief Returns a string describing the last warning.
  *
- * Value when the last call does not result in an warning is undefined 
+ * Value when the last call does not result in an warning is undefined
  * (may be NULL, may be garbage)
  */
 char *
@@ -316,7 +316,7 @@ tcpprep_getwarn(tcpprep_t *ctx)
  * tcpreplay_seterr() which is a macro wrapping this instead.
  */
 void
-__tcpprep_seterr(tcpprep_t *ctx, const char *func, const int line, 
+__tcpprep_seterr(tcpprep_t *ctx, const char *func, const int line,
         const char *file, const char *fmt, ...)
 {
     va_list ap;
@@ -339,7 +339,7 @@ __tcpprep_seterr(tcpprep_t *ctx, const char *func, const int line,
 /**
  * \brief Internal function to set the tcpedit warning string
  *
- * Used to set the warning string when there is an non-fatal issue, result is 
+ * Used to set the warning string when there is an non-fatal issue, result is
  * retrieved using tcpedit_getwarn().
  */
 void
@@ -401,7 +401,7 @@ tcpprep_post_args(tcpprep_t *ctx, int argc, char *argv[])
 #endif
 
 
-    /* 
+    /*
      * if we are to include the cli args, then prep it for the
      * cache file header
      */
@@ -430,7 +430,7 @@ tcpprep_post_args(tcpprep_t *ctx, int argc, char *argv[])
     if (ctx->options->comment != NULL) {
         strlcat(myargs, "\n", MYARGS_LEN);
         bufsize = strlen(ctx->options->comment) + strlen(myargs) + 1;
-        ctx->options->comment = (char *)safe_realloc(ctx->options->comment, 
+        ctx->options->comment = (char *)safe_realloc(ctx->options->comment,
             bufsize);
 
         tempstr = strdup(ctx->options->comment);

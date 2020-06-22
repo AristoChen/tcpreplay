@@ -33,7 +33,7 @@ extern "C" {
 /**
  * \brief EN10MB (Ethernet) Plugin API functions for modifying the 802.3 Ethernet header
  *
- * setters always return TCPEDIT_OK on success or TCPEDIT_ERROR 
+ * setters always return TCPEDIT_OK on success or TCPEDIT_ERROR
  * if there is a problem.  You can use tcpedit_geterr() to get the reason
  * for the failure
  */

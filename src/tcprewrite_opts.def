@@ -23,7 +23,7 @@ autogen definitions options;
 copyright = {
     date        = "2000-2018";
     owner       = "Aaron Turner and Fred Klassen";
-    eaddr       = "tcpreplay-users@lists.sourceforge.net"; 
+    eaddr       = "tcpreplay-users@lists.sourceforge.net";
     type        = gpl;
     author      = <<- EOText
 Copyright 2013-2018 Fred Klassen - AppNeta
@@ -114,7 +114,7 @@ flag = {
     max         = 1;
     immediate;
     doc         = <<- EOText
-If configured with --enable-debug, then you can specify a verbosity 
+If configured with --enable-debug, then you can specify a verbosity
 level for debugging output.  Higher numbers increase verbosity.
 EOText;
 };
@@ -251,7 +251,7 @@ flag = {
     fprintf(stderr, "\n");
     fprintf(stderr, "Copyright 2013-2018 by Fred Klassen <tcpreplay at appneta dot com> - AppNeta\n");
     fprintf(stderr, "Copyright 2000-2012 by Aaron Turner <aturner at synfin dot net>\n");
-    fprintf(stderr, "The entire Tcpreplay Suite is licensed under the GPLv3\n");  
+    fprintf(stderr, "The entire Tcpreplay Suite is licensed under the GPLv3\n");
     fprintf(stderr, "Cache file supported: %s\n", CACHEVERSION);
 #ifdef HAVE_LIBDNET
     fprintf(stderr, "Compiled against libdnet: %s\n", LIBDNET_VERSION);

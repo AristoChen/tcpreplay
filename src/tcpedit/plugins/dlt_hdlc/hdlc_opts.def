@@ -20,7 +20,7 @@ flag = {
 	arg-type	= "number";
 	range		= "0->255";
 	doc			= <<- EOText
-The Cisco HDLC header has a 1 byte "address" field which has two valid 
+The Cisco HDLC header has a 1 byte "address" field which has two valid
 values:
 @table @bullet
 @item

@@ -47,7 +47,7 @@
 /**
  * \brief Returns a string describing the last error.
  *
- * Value when the last call does not result in an error is undefined 
+ * Value when the last call does not result in an error is undefined
  * (may be NULL, may be garbage)
  */
 char *
@@ -58,9 +58,9 @@ tcpreplay_geterr(tcpreplay_t *ctx)
 }
 
 /**
- * \brief Returns a string describing the last warning.  
+ * \brief Returns a string describing the last warning.
  *
- * Value when the last call does not result in an warning is undefined 
+ * Value when the last call does not result in an warning is undefined
  * (may be NULL, may be garbage)
  */
 char *
@@ -516,7 +516,7 @@ tcpreplay_set_interface(tcpreplay_t *ctx, tcpreplay_intf intf, char *value)
     if (int1dlt != -1 && int2dlt != -1) {
         if (int1dlt != int2dlt) {
             tcpreplay_seterr(ctx, "DLT type mismatch for %s (%s) and %s (%s)",
-                ctx->options->intf1_name, pcap_datalink_val_to_name(int1dlt), 
+                ctx->options->intf1_name, pcap_datalink_val_to_name(int1dlt),
                 ctx->options->intf2_name, pcap_datalink_val_to_name(int2dlt));
             ret = -1;
             goto out;
@@ -541,7 +541,7 @@ tcpreplay_set_speed_mode(tcpreplay_t *ctx, tcpreplay_speed_mode value)
 }
 
 /**
- * Set the approprate speed value.  Value is interpreted based on 
+ * Set the approprate speed value.  Value is interpreted based on
  * how tcpreplay_set_speed_mode() value
  */
 int
@@ -663,7 +663,7 @@ tcpreplay_set_stats(tcpreplay_t *ctx, int value)
  * one file for each interface.
  */
 
-int 
+int
 tcpreplay_set_dualfile(tcpreplay_t *ctx, bool value)
 {
     assert(ctx);
@@ -672,7 +672,7 @@ tcpreplay_set_dualfile(tcpreplay_t *ctx, bool value)
 }
 
 /**
- * \brief Enable or disable preloading the file cache 
+ * \brief Enable or disable preloading the file cache
  *
  * Note: This is a global option and forces all pcaps
  * to be preloaded for this context.  If you turn this
@@ -750,7 +750,7 @@ tcpreplay_set_tcpprep_cache(tcpreplay_t *ctx, char *file)
     }
 
     tcpprep_file = safe_strdup(file);
-    ctx->options->cache_packets = read_cache(&ctx->options->cachedata, 
+    ctx->options->cache_packets = read_cache(&ctx->options->cachedata,
         tcpprep_file, &ctx->options->comment);
 
     free(tcpprep_file);
@@ -836,7 +836,7 @@ tcpreplay_set_manual_callback(tcpreplay_t *ctx, tcpreplay_manual_callback callba
     assert(callback);
 
     if (ctx->options->speed.mode != speed_oneatatime) {
-        tcpreplay_seterr(ctx, "%s", 
+        tcpreplay_seterr(ctx, "%s",
                 "Unable to set manual callback because speed mode is not 'speed_oneatatime'");
         return -1;
     }
@@ -964,7 +964,7 @@ tcpreplay_setwarn(tcpreplay_t *ctx, const char *fmt, ...)
  * cache file, loads the packet cache and anything else which might
  * cause a delay for starting to send packets with tcpreplay_replay()
  */
-int 
+int
 tcpreplay_prepare(tcpreplay_t *ctx)
 {
     char *intname, *ebuf;
@@ -976,7 +976,7 @@ tcpreplay_prepare(tcpreplay_t *ctx)
     ebuf = safe_malloc(SENDPACKET_ERRBUF_SIZE);
 
     /*
-     * First, process the validations, basically the same we do in 
+     * First, process the validations, basically the same we do in
      * tcpreplay_post_args() and AutoOpts
      */
     if (ctx->options->intf1_name == NULL) {
@@ -1011,7 +1011,7 @@ tcpreplay_prepare(tcpreplay_t *ctx)
         goto out;
     }
 
-    if ((ctx->options->dualfile || ctx->options->cachedata != NULL) && 
+    if ((ctx->options->dualfile || ctx->options->cachedata != NULL) &&
            ctx->options->intf2_name == NULL) {
         tcpreplay_seterr(ctx, "%s", "dual file mode and tcpprep cache files require two interfaces");
     }
@@ -1062,7 +1062,7 @@ tcpreplay_prepare(tcpreplay_t *ctx)
         int2dlt = sendpacket_get_dlt(ctx->intf2);
         if (int2dlt != int1dlt) {
             tcpreplay_seterr(ctx, "DLT type mismatch for %s (%s) and %s (%s)",
-                ctx->options->intf1_name, pcap_datalink_val_to_name(int1dlt), 
+                ctx->options->intf1_name, pcap_datalink_val_to_name(int1dlt),
                 ctx->options->intf2_name, pcap_datalink_val_to_name(int2dlt));
             ret = -1;
             goto out;
@@ -1184,7 +1184,7 @@ tcpreplay_replay(tcpreplay_t *ctx)
  * \brief Abort the tcpreplay_replay execution.
  *
  * This might take a little while since tcpreplay_replay() only checks this
- * once per packet (sleeping between packets can cause delays), however, 
+ * once per packet (sleeping between packets can cause delays), however,
  * this function returns once the signal has been sent and does not block
  */
 int
@@ -1208,10 +1208,10 @@ tcpreplay_abort(tcpreplay_t *ctx)
  * \brief Temporarily suspend tcpreplay_replay()
  *
  * This might take a little while since tcpreplay_replay() only checks this
- * once per packet (sleeping between packets can cause delays), however, 
- * this function returns once the signal has been sent and does not block 
+ * once per packet (sleeping between packets can cause delays), however,
+ * this function returns once the signal has been sent and does not block
  *
- * Note that suspending a running context can create odd timing 
+ * Note that suspending a running context can create odd timing
  */
 int
 tcpreplay_suspend(tcpreplay_t *ctx)
@@ -1251,7 +1251,7 @@ tcpreplay_is_suspended(tcpreplay_t *ctx)
  *
  * Returns true even if it is suspended
  */
-bool 
+bool
 tcpreplay_is_running(tcpreplay_t *ctx)
 {
     assert(ctx);

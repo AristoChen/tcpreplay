@@ -78,13 +78,13 @@ void notice(const char *fmt, ...);
     if (debug >= x) \
         fprintf(stderr, "DEBUG%d in %s:%s() line %d: %s\n", x, __FILE__, __FUNCTION__, __LINE__, y); \
     } while(0)
-    
+
 #define dbgx(x, y, ...) do { \
     if (debug >= x) { \
         fprintf(stderr, "DEBUG%d in %s:%s() line %d: " y "\n", x, __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__); \
     } \
 } while(0)
-        
+
 
 #define warn(x) fprintf(stderr, "Warning in %s:%s() line %d:\n%s\n", __FILE__, __FUNCTION__, __LINE__, x)
 

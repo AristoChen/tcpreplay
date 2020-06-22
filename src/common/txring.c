@@ -90,13 +90,13 @@ txring_put(txring_t *txp, const void * data, size_t length)
     unsigned int start_index = txp->tx_index;
 
     do {
-        ps_header = ((struct tpacket_hdr *)((void *)txp->tx_head + 
+        ps_header = ((struct tpacket_hdr *)((void *)txp->tx_head +
                     (txp->treq->tp_frame_size * txp->tx_index)));
         to_data = ((void*) ps_header) + tdata_offset;
 
         switch ((volatile uint32_t)ps_header->tp_status) {
             case TP_STATUS_WRONG_FORMAT:
-                warnx("TP_STATUS_WRONG_FORMAT occuries O_o. Frame %d, pkt len %d\n", 
+                warnx("TP_STATUS_WRONG_FORMAT occuries O_o. Frame %d, pkt len %d\n",
                         txp->tx_index, length);
                 break;
 
@@ -143,7 +143,7 @@ txring_put(txring_t *txp, const void * data, size_t length)
  * This builds a ring buffer request structure making sure
  * that we have buffers big enough so that a frame which
  * is the size of the MTU doesn't get truncated. We also
- * need to structure things with minimum memory wastage 
+ * need to structure things with minimum memory wastage
  */
 void
 txring_mkreq(struct tpacket_req* treq, unsigned int mtu)
@@ -176,8 +176,8 @@ txring_mkreq(struct tpacket_req* treq, unsigned int mtu)
         treq->tp_block_nr   = nr_blocks;
         treq->tp_frame_nr   = mult * nr_blocks;
     }
-    dbgx(1, "txring: block_size=%d block_nr=%d frame_size=%d frame_nr=%d", 
-            treq->tp_block_size, treq->tp_block_nr, treq->tp_frame_size, 
+    dbgx(1, "txring: block_size=%d block_nr=%d frame_size=%d frame_nr=%d",
+            treq->tp_block_size, treq->tp_block_nr, treq->tp_frame_size,
             treq->tp_frame_nr);
 }
 

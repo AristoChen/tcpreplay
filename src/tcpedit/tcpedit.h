@@ -35,7 +35,7 @@ extern "C" {
 #endif
 
 /**
- * libtcpedit common API 
+ * libtcpedit common API
  */
 
 int tcpedit_init(tcpedit_t **tcpedit_ex, int dlt);
@@ -45,7 +45,7 @@ char *tcpedit_getwarn(tcpedit_t *tcpedit);
 int tcpedit_checkerror(tcpedit_t *tcpedit, const int rcode, const char *prefix);
 int tcpedit_validate(tcpedit_t *tcpedit);
 
-int tcpedit_packet(tcpedit_t *tcpedit, struct pcap_pkthdr **pkthdr, 
+int tcpedit_packet(tcpedit_t *tcpedit, struct pcap_pkthdr **pkthdr,
         u_char **pktdata, tcpr_dir_t direction);
 
 int tcpedit_close(tcpedit_t *tcpedit);

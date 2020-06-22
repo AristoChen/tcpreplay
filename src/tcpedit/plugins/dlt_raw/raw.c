@@ -47,7 +47,7 @@ static uint16_t dlt_value = DLT_RAW;
  * - Add the plugin to the context's plugin chain
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_raw_register(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
@@ -65,8 +65,8 @@ dlt_raw_register(tcpeditdlt_t *ctx)
     /* set the prefix name of our plugin.  This is also used as the prefix for our options */
     plugin->name = safe_strdup(dlt_prefix);
 
-    /* 
-     * Point to our functions, note, you need a function for EVERY method.  
+    /*
+     * Point to our functions, note, you need a function for EVERY method.
      * Even if it is only an empty stub returning success.
      */
     plugin->plugin_init = dlt_raw_init;
@@ -80,19 +80,19 @@ dlt_raw_register(tcpeditdlt_t *ctx)
     plugin->plugin_get_layer3 = dlt_raw_get_layer3;
     plugin->plugin_merge_layer3 = dlt_raw_merge_layer3;
     plugin->plugin_get_mac = dlt_raw_get_mac;
-    
+
     /* add it to the available plugin list */
     return tcpedit_dlt_addplugin(ctx, plugin);
 }
 
- 
+
 /*
  * Initializer function.  This function is called only once, if and only if
- * this plugin will be utilized.  Remember, if you need to keep track of any state, 
+ * this plugin will be utilized.  Remember, if you need to keep track of any state,
  * store it in your plugin->config, not a global!
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_raw_init(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
@@ -119,7 +119,7 @@ dlt_raw_init(tcpeditdlt_t *ctx)
  * Unless you allocated some memory in dlt_raw_init(), this is just an stub.
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_raw_cleanup(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
@@ -136,7 +136,7 @@ dlt_raw_cleanup(tcpeditdlt_t *ctx)
         ctx->decoded_extra = NULL;
         ctx->decoded_extra_size = 0;
     }
-        
+
     if (plugin->config != NULL) {
         safe_free(plugin->config);
         plugin->config = NULL;
@@ -152,7 +152,7 @@ dlt_raw_cleanup(tcpeditdlt_t *ctx)
  * bit mask.
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_raw_parse_opts(tcpeditdlt_t *ctx)
 {
     assert(ctx);
@@ -171,7 +171,7 @@ dlt_raw_parse_opts(tcpeditdlt_t *ctx)
  * - ctx->decoded_extra
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_raw_decode(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
 {
     int proto;
@@ -183,7 +183,7 @@ dlt_raw_decode(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
 
     if ((proto = dlt_raw_proto(ctx, packet, pktlen)) == TCPEDIT_ERROR)
         return TCPEDIT_ERROR;
-        
+
     ctx->proto = (uint16_t)proto;
     ctx->l2len = 0;
 
@@ -194,21 +194,21 @@ dlt_raw_decode(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
  * Function to encode the layer 2 header back into the packet.
  * Returns: total packet len or TCPEDIT_ERROR
  */
-int 
+int
 dlt_raw_encode(tcpeditdlt_t *ctx, u_char *packet, _U_ int pktlen,
         _U_ tcpr_dir_t dir)
 {
     assert(ctx);
     assert(packet);
-    
+
     tcpedit_seterr(ctx->tcpedit, "%s", "DLT_RAW plugin does not support packet encoding");
-    return TCPEDIT_ERROR; 
+    return TCPEDIT_ERROR;
 }
 
 /*
  * Function returns the Layer 3 protocol type of the given packet, or TCPEDIT_ERROR on error
  */
-int 
+int
 dlt_raw_proto(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
 {
     struct tcpr_ipv4_hdr *iphdr;
@@ -228,7 +228,7 @@ dlt_raw_proto(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
         tcpedit_seterr(ctx->tcpedit, "%s", "Unsupported DLT_RAW packet: doesn't look like IPv4 or IPv6");
         return TCPEDIT_ERROR;
     }
-    
+
     return htons(protocol);
 }
 
@@ -240,7 +240,7 @@ dlt_raw_get_layer3(tcpeditdlt_t *ctx, u_char *packet, _U_ const int pktlen)
 {
     assert(ctx);
     assert(packet);
-    
+
     /* raw has a zero byte header, so this is basically a non-op */
 
     return packet;
@@ -259,13 +259,13 @@ dlt_raw_merge_layer3(tcpeditdlt_t *ctx, u_char *packet, _U_ const int pktlen,
     assert(ctx);
     assert(packet);
     assert(l3data);
-    
+
     /* raw has a zero byte header, so this is basically a non-op */
-    
+
     return packet;
 }
 
-/* 
+/*
  * return the length of the L2 header of the current packet
  */
 int
@@ -280,7 +280,7 @@ dlt_raw_l2len(tcpeditdlt_t *ctx, const u_char *packet, _U_ const int pktlen)
 /*
  * return a static pointer to the source/destination MAC address
  * return NULL on error/address doesn't exist
- */    
+ */
 u_char *
 dlt_raw_get_mac(tcpeditdlt_t *ctx, _U_ tcpeditdlt_mac_type_t mac,
         const u_char *packet, _U_ const int pktlen)
@@ -291,7 +291,7 @@ dlt_raw_get_mac(tcpeditdlt_t *ctx, _U_ tcpeditdlt_mac_type_t mac,
     return(NULL);
 }
 
-tcpeditdlt_l2addr_type_t 
+tcpeditdlt_l2addr_type_t
 dlt_raw_l2addr_type(void)
 {
     return NONE;

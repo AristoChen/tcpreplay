@@ -29,8 +29,8 @@
 #include "mac.h"
 
 /**
- * converts a string representation of a MAC address, based on 
- * non-portable ether_aton() 
+ * converts a string representation of a MAC address, based on
+ * non-portable ether_aton()
  */
 void
 mac2hex(const char *mac, u_char *dst, int len)
@@ -58,7 +58,7 @@ mac2hex(const char *mac, u_char *dst, int len)
 
 /**
  * converts a string representation of TWO MAC addresses, which
- * are comma deliminated into two hex values.  Either *first or *second 
+ * are comma deliminated into two hex values.  Either *first or *second
  * can be NULL if there is nothing before or after the comma.
  * returns:
  * 1 = first mac
@@ -88,12 +88,12 @@ dualmac2hex(const char *dualmac, u_char *first, u_char *second, int len)
 
     temp = strtok_r(NULL, ",", &tok);
     /* temp is null if no comma */
-    if (temp != NULL) { 
+    if (temp != NULL) {
         if (strlen(temp)) {
             mac2hex(temp, second, len);
             ret += 2;
         }
-    } 
+    }
 
 done:
     safe_free(string);
@@ -112,10 +112,10 @@ macinstring(const char *macstring, const u_char *mac)
     char *tok = NULL, *tempstr, *ourstring;
     u_char tempmac[6];
     int len = 6, ret = TCPR_DIR_S2C;
-    
+
     ourstring = safe_strdup(macstring);
     memset(&tempmac[0], 0, sizeof(tempmac));
-    
+
     tempstr = strtok_r(ourstring, ",", &tok);
     if (strlen(tempstr)) {
        mac2hex(tempstr, tempmac, len);

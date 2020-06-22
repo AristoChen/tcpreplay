@@ -27,7 +27,7 @@
 #include "tcpedit/tcpedit.h"
 
 /*
- * RBTree node object for tracking which side of tcpreplay where 
+ * RBTree node object for tracking which side of tcpreplay where
  * each source MAC address lives
  */
 struct macsrc_t {

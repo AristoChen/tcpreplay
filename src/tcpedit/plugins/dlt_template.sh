@@ -24,7 +24,7 @@ PLUGIN=$1
 
 PLUGINDIR="dlt_${PLUGIN}"
 
-if [ ! -d $PLUGINDIR ]; then 
+if [ ! -d $PLUGINDIR ]; then
     try mkdir $PLUGINDIR
 fi
 

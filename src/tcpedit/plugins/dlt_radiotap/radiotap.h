@@ -48,17 +48,17 @@ struct radiotap_extra_s {
 typedef struct radiotap_extra_s radiotap_extra_t;
 
 
-/* 
- * FIXME: structure to hold any data in the tcpeditdlt_plugin_t->config 
- * Things like: 
+/*
+ * FIXME: structure to hold any data in the tcpeditdlt_plugin_t->config
+ * Things like:
  * - Parsed user options
  * - State between packets
  * - Note, you should only use this for the encoder function, decoder functions should place
- *   "extra" data parsed from the packet in the tcpeditdlt_t->decoded_extra buffer since that 
+ *   "extra" data parsed from the packet in the tcpeditdlt_t->decoded_extra buffer since that
  *   is available to any encoder plugin.
  */
 struct radiotap_config_s {
-    /* dummy entry for SunPro compiler which doesn't like empty structs */    
+    /* dummy entry for SunPro compiler which doesn't like empty structs */
     int dummy;
 };
 typedef struct radiotap_config_s radiotap_config_t;

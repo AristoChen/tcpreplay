@@ -251,7 +251,7 @@ packet_stats(const tcpreplay_stats_t *stats)
         printf("Rated: %llu.%1u Bps, %llu.%03u Mbps, %llu.%02u pps\n",
                bytes_sec, bytes_sec_10ths, mb_sec, mb_sec_1000ths, pkts_sec, pkts_sec_100ths);
     fflush(NULL);
-    
+
     if (stats->failed)
         printf("Failed write attempts: " COUNTER_SPEC "\n",
                 stats->failed);

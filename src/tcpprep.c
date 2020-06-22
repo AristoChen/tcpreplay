@@ -85,17 +85,17 @@ main(int argc, char *argv[])
     COUNTER totpackets = 0;
     char errbuf[PCAP_ERRBUF_SIZE];
     tcpprep_opt_t *options;
- 
+
     tcpprep = tcpprep_init();
     options = tcpprep->options;
-    
+
     optionProcess(&tcpprepOptions, argc, argv);
     tcpprep_post_args(tcpprep, argc, argv);
 
     /* open the cache file */
     if ((out_file = open(OPT_ARG(CACHEFILE), O_WRONLY | O_CREAT | O_TRUNC,
             S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH)) == -1)
-        errx(-1, "Unable to open cache file %s for writing: %s", 
+        errx(-1, "Unable to open cache file %s for writing: %s",
             OPT_ARG(CACHEFILE), strerror(errno));
 
   readpcap:
@@ -175,9 +175,9 @@ main(int argc, char *argv[])
 
         if (info)
             notice("Building cache file...\n");
-        /* 
+        /*
          * re-process files, but this time generate
-         * cache 
+         * cache
          */
         goto readpcap;
     }
@@ -187,7 +187,7 @@ main(int argc, char *argv[])
 #endif
 
     /* write cache data */
-    totpackets = write_cache(options->cachedata, out_file, totpackets, 
+    totpackets = write_cache(options->cachedata, out_file, totpackets,
         options->comment);
     if (info)
         notice("Done.\nCached " COUNTER_SPEC " packets.\n", totpackets);
@@ -204,7 +204,7 @@ main(int argc, char *argv[])
  * checks the dst port to see if this is destined for a server port.
  * returns 1 for true, 0 for false
  */
-static int 
+static int
 check_dst_port(ipv4_hdr_t *ip_hdr, ipv6_hdr_t *ip6_hdr, int len)
 {
     tcp_hdr_t *tcp_hdr = NULL;
@@ -331,7 +331,7 @@ process_raw_packets(pcap_t * pcap)
     tcpprep_opt_t *options = tcpprep->options;
 
     assert(pcap);
-    
+
     ipbuff = safe_malloc(MAXPACKET);
 
     while ((pktdata = safe_pcap_next(pcap, &pkthdr)) != NULL) {
@@ -362,18 +362,18 @@ process_raw_packets(pcap_t * pcap)
          */
         if (options->mode != MAC_MODE) {
             dbg(3, "Looking for IPv4/v6 header in non-MAC mode");
-            
+
             /* get the IP header (if any) */
             buffptr = ipbuff;
-    
+
             /* first look for IPv4 */
-            if ((ip_hdr = (ipv4_hdr_t *)get_ipv4(pktdata, pkthdr.caplen, 
+            if ((ip_hdr = (ipv4_hdr_t *)get_ipv4(pktdata, pkthdr.caplen,
                     pcap_datalink(pcap), &buffptr))) {
                 dbg(2, "Packet is IPv4");
             } else if ((ip6_hdr = (ipv6_hdr_t *)get_ipv6(pktdata, pkthdr.caplen,
                     pcap_datalink(pcap), &buffptr))) {
                 /* IPv6 */
-                dbg(2, "Packet is IPv6");    
+                dbg(2, "Packet is IPv6");
             } else {
                 /* we're something else... */
                 dbg(2, "Packet isn't IPv4/v6");
@@ -387,7 +387,7 @@ process_raw_packets(pcap_t * pcap)
                 /* go to next packet */
                 continue;
             }
-    
+
             l2len = get_l2len(pktdata, pkthdr.caplen, pcap_datalink(pcap));
             if (l2len < 0) {
                 /* go to next packet */
@@ -473,11 +473,11 @@ process_raw_packets(pcap_t * pcap)
                 } else if (ip6_hdr) {
                     add_tree_first_ipv6(pktdata, pkthdr.caplen);
                 }
-            }  
+            }
             break;
 
         case ROUTER_MODE:
-            /* 
+            /*
              * second run through in auto mode: create route
              * based cache
              */
@@ -507,7 +507,7 @@ process_raw_packets(pcap_t * pcap)
             break;
 
         case SERVER_MODE:
-            /* 
+            /*
              * second run through in auto mode: create bridge
              * where unknowns are servers
              */
@@ -522,7 +522,7 @@ process_raw_packets(pcap_t * pcap)
             break;
 
         case CLIENT_MODE:
-            /* 
+            /*
              * second run through in auto mode: create bridge
              * where unknowns are clients
              */
@@ -559,7 +559,7 @@ process_raw_packets(pcap_t * pcap)
                     check_ip6_tree(DIR_UNKNOWN, &ip6_hdr->ip_src));
             }
             break;
-            
+
         default:
             errx(-1, "Whoops!  What mode are we in anyways? %d", options->mode);
         }
@@ -607,7 +607,7 @@ print_info(const char *file)
         exit(-1);
 
     for (i = 1; i <= count; i ++) {
-        
+
         switch (check_cache(cachedata, i)) {
         case TCPR_DIR_C2S:
             printf("Packet " COUNTER_SPEC " -> Primary\n", i);
@@ -637,7 +637,7 @@ print_stats(const char *file)
     char *comment = NULL;
     COUNTER i, count = 0;
     COUNTER pri = 0, sec = 0, nosend = 0;
-    
+
     count = read_cache(&cachedata, file, &comment);
     for (i = 1; i <= count; i ++) {
         int cacheval = check_cache(cachedata, i);

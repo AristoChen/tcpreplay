@@ -34,7 +34,7 @@
  * returns 1 for true & 0 for false
  */
 int
-ieee80211_is_data(tcpeditdlt_t *ctx, const void *packet, const int pktlen) 
+ieee80211_is_data(tcpeditdlt_t *ctx, const void *packet, const int pktlen)
 {
     uint16_t *frame_control, fc;
     struct tcpr_802_2snap_hdr *snap;
@@ -49,11 +49,11 @@ ieee80211_is_data(tcpeditdlt_t *ctx, const void *packet, const int pktlen)
         return 0;
     }
 
-    /* 
+    /*
      * Fields: Version|Type|Subtype|Flags
      * Bytes: 2|2|4|8
      * Types: 00 = Management, 01 = Control, 10 = Data
-     * Data Subtypes (in binary): 
+     * Data Subtypes (in binary):
      * 0000 - Data
      * 0001 - Data + Ack
      * 0010 - Data + Poll
@@ -81,7 +81,7 @@ ieee80211_is_data(tcpeditdlt_t *ctx, const void *packet, const int pktlen)
         return 1;
     }
 
-    /* QoS is set by the high bit, all the lower bits are QoS sub-types 
+    /* QoS is set by the high bit, all the lower bits are QoS sub-types
        QoS seems to add 2 bytes of data at the end of the 802.11 hdr */
     if ((fc & ieee80211_FC_SUBTYPE_MASK) >= ieee80211_FC_SUBTYPE_QOS) {
         hdrlen += 2;
@@ -104,14 +104,14 @@ ieee80211_is_data(tcpeditdlt_t *ctx, const void *packet, const int pktlen)
     if (snap->snap_dsap == 0xAA && snap->snap_ssap == 0xAA) {
         dbg(2, "packet is 802.2SNAP which I think always has data");
         return 1;
-    } 
+    }
 
     warnx("Packet " COUNTER_SPEC " is unknown reason for non-data", ctx->tcpedit->runtime.packetnum);
 
     return 0;
 }
 
-/* 
+/*
  * returns 1 if WEP is enabled, 0 if not
  */
 int

@@ -25,7 +25,7 @@ flag = {
     arg-type    = string;
     max         = 1;
     doc         = <<- EO_DLT_DOC
-By default, no DLT (data link type) conversion will be made.  
+By default, no DLT (data link type) conversion will be made.
 To change the DLT type of the output pcap, select one of the following values:
 @table @bullet
 @item

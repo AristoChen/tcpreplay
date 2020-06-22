@@ -411,7 +411,7 @@ static inline void update_flow_stats(tcpreplay_t *ctx, sendpacket_t *sp,
     }
 }
 /**
- * \brief Preloads the memory cache for the given pcap file_idx 
+ * \brief Preloads the memory cache for the given pcap file_idx
  *
  * Preloading can be used with or without --loop
  */
@@ -519,7 +519,7 @@ send_packets(tcpreplay_t *ctx, pcap_t *pcap, int idx)
         prev_packet = NULL;
     }
 
-    /* MAIN LOOP 
+    /* MAIN LOOP
      * Keep sending while we have packets or until
      * we've sent enough packets
      */
@@ -766,7 +766,7 @@ send_dual_packets(tcpreplay_t *ctx, pcap_t *pcap1, int cache_file_idx1, pcap_t *
     pktdata1 = get_next_packet(ctx, pcap1, &pkthdr1, cache_file_idx1, prev_packet1);
     pktdata2 = get_next_packet(ctx, pcap2, &pkthdr2, cache_file_idx2, prev_packet2);
 
-    /* MAIN LOOP 
+    /* MAIN LOOP
      * Keep sending while we have packets or until
      * we've sent enough packets
      */
@@ -776,8 +776,8 @@ send_dual_packets(tcpreplay_t *ctx, pcap_t *pcap1, int cache_file_idx1, pcap_t *
         now_is_now = false;
         packetnum++;
 
-        /* figure out which pcap file we need to process next 
-         * when get_next_packet() returns null for pktdata, the pkthdr 
+        /* figure out which pcap file we need to process next
+         * when get_next_packet() returns null for pktdata, the pkthdr
          * will still have the old values from the previous call.  This
          * means we can't always trust the timestamps to tell us which
          * file to process.
@@ -997,7 +997,7 @@ send_dual_packets(tcpreplay_t *ctx, pcap_t *pcap1, int cache_file_idx1, pcap_t *
  * will be updated as new entries are added (or retrieved) from the cache list.
  */
 u_char *
-get_next_packet(tcpreplay_t *ctx, pcap_t *pcap, struct pcap_pkthdr *pkthdr, int idx, 
+get_next_packet(tcpreplay_t *ctx, pcap_t *pcap, struct pcap_pkthdr *pkthdr, int idx,
     packet_cache_t **prev_packet)
 {
     tcpreplay_opt_t *options = ctx->options;
@@ -1074,9 +1074,9 @@ get_next_packet(tcpreplay_t *ctx, pcap_t *pcap, struct pcap_pkthdr *pkthdr, int 
 }
 
 /**
- * determines based upon the cachedata which interface the given packet 
+ * determines based upon the cachedata which interface the given packet
  * should go out.  Also rewrites any layer 2 data we might need to adjust.
- * Returns a void cased pointer to the ctx->intfX of the corresponding 
+ * Returns a void cased pointer to the ctx->intfX of the corresponding
  * interface or NULL on error
  */
 void *
@@ -1315,7 +1315,7 @@ static void tcpr_sleep(tcpreplay_t *ctx, sendpacket_t *sp,
  * Ask the user how many packets they want to send.
  */
 static uint32_t
-get_user_count(tcpreplay_t *ctx, sendpacket_t *sp, COUNTER counter) 
+get_user_count(tcpreplay_t *ctx, sendpacket_t *sp, COUNTER counter)
 {
     tcpreplay_opt_t *options = ctx->options;
     struct pollfd poller[1];        /* use poll to read from the keyboard */
@@ -1329,7 +1329,7 @@ get_user_count(tcpreplay_t *ctx, sendpacket_t *sp, COUNTER counter)
     poller[0].events = POLLIN | POLLPRI | POLLNVAL;
     poller[0].revents = 0;
 
-    if (fcntl(0, F_SETFL, fcntl(0, F_GETFL) & ~O_NONBLOCK)) 
+    if (fcntl(0, F_SETFL, fcntl(0, F_GETFL) & ~O_NONBLOCK))
         errx(-1, "Unable to clear non-blocking flag on stdin: %s", strerror(errno));
 
     /* wait for the input */
@@ -1339,7 +1339,7 @@ get_user_count(tcpreplay_t *ctx, sendpacket_t *sp, COUNTER counter)
     /*
      * read to the end of the line or EBUF_SIZE,
      * Note, if people are stupid, and type in more text then EBUF_SIZE
-     * then the next fgets() will pull in that data, which will have poor 
+     * then the next fgets() will pull in that data, which will have poor
      * results.  fuck them.
      */
     if (fgets(input, sizeof(input), stdin) == NULL) {

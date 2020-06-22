@@ -20,7 +20,7 @@
 
 /*
  * Purpose: Modify packets in a pcap file based on rules provided by the
- * user to offload work from tcpreplay and provide a easier means of 
+ * user to offload work from tcpreplay and provide a easier means of
  * reproducing traffic for testing purposes.
  */
 
@@ -60,7 +60,7 @@ void tcprewrite_init(void);
 void post_args(int argc, char *argv[]);
 int rewrite_packets(tcpedit_t *tcpedit, pcap_t *pin, pcap_dumper_t *pout);
 
-int 
+int
 main(int argc, char *argv[])
 {
     int optct, rcode;
@@ -153,7 +153,7 @@ main(int argc, char *argv[])
     return 0;
 }
 
-void 
+void
 tcprewrite_init(void)
 {
 
@@ -171,7 +171,7 @@ tcprewrite_init(void)
 /**
  * post AutoGen argument processing
  */
-void 
+void
 post_args(_U_ int argc, _U_ char *argv[])
 {
     char ebuf[PCAP_ERRBUF_SIZE];
@@ -225,7 +225,7 @@ post_args(_U_ int argc, _U_ char *argv[])
 
 }
 
-/** 
+/**
  * Main loop to rewrite packets
  */
 int
@@ -253,7 +253,7 @@ rewrite_packets(tcpedit_t *tcpedit, pcap_t *pin, pcap_dumper_t *pout)
     if (frag == NULL)
         frag = (char *)safe_malloc(MAXPACKET);
 
-    /* MAIN LOOP 
+    /* MAIN LOOP
      * Keep sending while we have packets or until
      * we've sent enough packets
      */
@@ -263,7 +263,7 @@ rewrite_packets(tcpedit_t *tcpedit, pcap_t *pin, pcap_dumper_t *pout)
 
         if (pkthdr.caplen > MAX_SNAPLEN)
             errx(-1, "Frame too big, caplen %d exceeds %d", pkthdr.caplen, MAX_SNAPLEN);
-        /* 
+        /*
          * copy over the packet so we can pad it out if necessary and
          * because pcap_next() returns a const ptr
          */

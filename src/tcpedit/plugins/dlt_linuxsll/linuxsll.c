@@ -45,7 +45,7 @@ static uint16_t dlt_value = DLT_LINUX_SLL;
  * - Add the plugin to the context's plugin chain
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_linuxsll_register(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
@@ -65,8 +65,8 @@ dlt_linuxsll_register(tcpeditdlt_t *ctx)
     /* set the prefix name of our plugin.  This is also used as the prefix for our options */
     plugin->name = safe_strdup(dlt_prefix);
 
-    /* 
-     * Point to our functions, note, you need a function for EVERY method.  
+    /*
+     * Point to our functions, note, you need a function for EVERY method.
      * Even if it is only an empty stub returning success.
      */
     plugin->plugin_init = dlt_linuxsll_init;
@@ -88,11 +88,11 @@ dlt_linuxsll_register(tcpeditdlt_t *ctx)
 
 /*
  * Initializer function.  This function is called only once, if and only if
- * this plugin will be utilized.  Remember, if you need to keep track of any state, 
+ * this plugin will be utilized.  Remember, if you need to keep track of any state,
  * store it in your plugin->config, not a global!
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_linuxsll_init(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
@@ -119,7 +119,7 @@ dlt_linuxsll_init(tcpeditdlt_t *ctx)
  * Unless you allocated some memory in dlt_linuxsll_init(), this is just an stub.
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_linuxsll_cleanup(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
@@ -152,7 +152,7 @@ dlt_linuxsll_cleanup(tcpeditdlt_t *ctx)
  * bit mask.
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_linuxsll_parse_opts(tcpeditdlt_t *ctx)
 {
     assert(ctx);
@@ -171,7 +171,7 @@ dlt_linuxsll_parse_opts(tcpeditdlt_t *ctx)
  * - ctx->decoded_extra
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_linuxsll_decode(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
 {
     int type;
@@ -202,7 +202,7 @@ dlt_linuxsll_decode(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
  * Function to encode the layer 2 header back into the packet.
  * Returns: total packet len or TCPEDIT_ERROR
  */
-int 
+int
 dlt_linuxsll_encode(tcpeditdlt_t *ctx, u_char *packet, _U_ int pktlen,
         _U_ tcpr_dir_t dir)
 {
@@ -216,7 +216,7 @@ dlt_linuxsll_encode(tcpeditdlt_t *ctx, u_char *packet, _U_ int pktlen,
 /*
  * Function returns the Layer 3 protocol type of the given packet, or TCPEDIT_ERROR on error
  */
-int 
+int
 dlt_linuxsll_proto(tcpeditdlt_t *ctx, const u_char *packet, const int pktlen)
 {
     linux_sll_header_t *linux_sll;
@@ -269,7 +269,7 @@ dlt_linuxsll_merge_layer3(tcpeditdlt_t *ctx, u_char *packet, const int pktlen, u
     return tcpedit_dlt_l3data_merge(ctx, packet, pktlen, l3data, l2len);
 }
 
-/* 
+/*
  * return the length of the L2 header of the current packet
  */
 int
@@ -314,7 +314,7 @@ dlt_linuxsll_get_mac(tcpeditdlt_t *ctx, tcpeditdlt_mac_type_t mac, const u_char 
     return(NULL);
 }
 
-tcpeditdlt_l2addr_type_t 
+tcpeditdlt_l2addr_type_t
 dlt_linuxsll_l2addr_type(void)
 {
     /* we only support ethernet packets */

@@ -42,18 +42,18 @@
 static int ioport_sleep_value;
 #endif
 
-void 
-ioport_sleep_init(void) 
+void
+ioport_sleep_init(void)
 {
 #if defined HAVE_IOPORT_SLEEP__
     ioperm(0x80, 1, 1);
-    ioport_sleep_value = inb(0x80);    
+    ioport_sleep_value = inb(0x80);
 #else
     err(-1, "Platform does not support IO Port for timing");
 #endif
 }
 
-void 
+void
 ioport_sleep(sendpacket_t *sp _U_, const struct timespec *nap _U_,
         struct timeval *now _U_,  bool flush _U_)
 {
@@ -64,8 +64,8 @@ ioport_sleep(sendpacket_t *sp _U_, const struct timespec *nap _U_,
 
     TIMESPEC_TO_TIMEVAL(&nap_for, nap);
 
-    /* 
-     * process the seconds, we do this in a loop so we don't have to 
+    /*
+     * process the seconds, we do this in a loop so we don't have to
      * use slower 64bit integers or worry about integer overflows.
      */
     for (i = 0; i < nap_for.tv_sec; i ++) {

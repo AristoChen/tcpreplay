@@ -43,7 +43,7 @@ static uint16_t dlt_value = DLT_USER0;
  * - Add the plugin to the context's plugin chain
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_user_register(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
@@ -62,8 +62,8 @@ dlt_user_register(tcpeditdlt_t *ctx)
     /* set the prefix name of our plugin.  This is also used as the prefix for our options */
     plugin->name = safe_strdup(dlt_prefix);
 
-    /* 
-     * Point to our functions, note, you need a function for EVERY method.  
+    /*
+     * Point to our functions, note, you need a function for EVERY method.
      * Even if it is only an empty stub returning success.
      */
     plugin->plugin_init = dlt_user_init;
@@ -77,30 +77,30 @@ dlt_user_register(tcpeditdlt_t *ctx)
     plugin->plugin_get_layer3 = dlt_user_get_layer3;
     plugin->plugin_merge_layer3 = dlt_user_merge_layer3;
     plugin->plugin_get_mac = dlt_user_get_mac;
-    
+
     /* add it to the available plugin list */
     return tcpedit_dlt_addplugin(ctx, plugin);
 }
 
- 
+
 /*
  * Initializer function.  This function is called only once, if and only if
- * this plugin will be utilized.  Remember, if you need to keep track of any state, 
+ * this plugin will be utilized.  Remember, if you need to keep track of any state,
  * store it in your plugin->config, not a global!
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_user_init(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
     user_config_t *config;
     assert(ctx);
-    
+
     if ((plugin = tcpedit_dlt_getplugin(ctx, dlt_value)) == NULL) {
         tcpedit_seterr(ctx->tcpedit, "Unable to initialize unregistered plugin %s", dlt_name);
         return TCPEDIT_ERROR;
     }
-    
+
     /* allocate memory for our decode extra data - plus some space for
      * other DLT decodes
      */
@@ -110,10 +110,10 @@ dlt_user_init(tcpeditdlt_t *ctx)
     /* allocate memory for our config data */
     plugin->config_size = sizeof(user_config_t);
     plugin->config = safe_malloc(plugin->config_size);
-    
+
     config = (user_config_t *)plugin->config;
     config->length = -1;
-    
+
     /* do nothing */
     return TCPEDIT_OK; /* success */
 }
@@ -123,7 +123,7 @@ dlt_user_init(tcpeditdlt_t *ctx)
  * Unless you allocated some memory in dlt_user_init(), this is just an stub.
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_user_cleanup(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
@@ -140,7 +140,7 @@ dlt_user_cleanup(tcpeditdlt_t *ctx)
         ctx->decoded_extra = NULL;
         ctx->decoded_extra_size = 0;
     }
-        
+
     if (plugin->config != NULL) {
         safe_free(plugin->config);
         plugin->config = NULL;
@@ -156,7 +156,7 @@ dlt_user_cleanup(tcpeditdlt_t *ctx)
  * bit mask.
  * Returns: TCPEDIT_ERROR | TCPEDIT_OK | TCPEDIT_WARN
  */
-int 
+int
 dlt_user_parse_opts(tcpeditdlt_t *ctx)
 {
     tcpeditdlt_plugin_t *plugin;
@@ -172,7 +172,7 @@ dlt_user_parse_opts(tcpeditdlt_t *ctx)
         return TCPEDIT_ERROR;
 
     /*
-     * --user-dlt will override the output DLT type, otherwise we'll use 
+     * --user-dlt will override the output DLT type, otherwise we'll use
      * the DLT of the decoder
      */
     if (HAVE_OPT(USER_DLT)) {
@@ -186,7 +186,7 @@ dlt_user_parse_opts(tcpeditdlt_t *ctx)
         int  ct = STACKCT_OPT(USER_DLINK);
         char **list = (char**)STACKLST_OPT(USER_DLINK);
         int first = 1;
-        
+
         do  {
             char *p = *list++;
             if (first) {
@@ -203,12 +203,12 @@ dlt_user_parse_opts(tcpeditdlt_t *ctx)
             first = 0;
         } while (--ct > 0);
     }
-    
+
     return TCPEDIT_OK; /* success */
 }
 
 /* you should never decode packets with this plugin! */
-int 
+int
 dlt_user_decode(tcpeditdlt_t *ctx, const u_char *packet, const int _U_ pktlen)
 {
     assert(ctx);
@@ -222,7 +222,7 @@ dlt_user_decode(tcpeditdlt_t *ctx, const u_char *packet, const int _U_ pktlen)
  * Function to encode the layer 2 header back into the packet.
  * Returns: total packet len or TCPEDIT_ERROR
  */
-int 
+int
 dlt_user_encode(tcpeditdlt_t *ctx, u_char *packet, int pktlen, tcpr_dir_t dir)
 {
     user_config_t *config;
@@ -233,7 +233,7 @@ dlt_user_encode(tcpeditdlt_t *ctx, u_char *packet, int pktlen, tcpr_dir_t dir)
 
     if (pktlen == 0)
         return TCPEDIT_ERROR;
-    
+
     plugin = tcpedit_dlt_getplugin(ctx, dlt_value);
     if (!plugin)
         return TCPEDIT_ERROR;
@@ -254,7 +254,7 @@ dlt_user_encode(tcpeditdlt_t *ctx, u_char *packet, int pktlen, tcpr_dir_t dir)
 
     /* update the total packet length */
     pktlen += config->length - ctx->l2len;
-    
+
     if (dir == TCPR_DIR_C2S) {
         memcpy(packet, config->l2client, config->length);
     } else if (dir == TCPR_DIR_S2C) {
@@ -263,15 +263,15 @@ dlt_user_encode(tcpeditdlt_t *ctx, u_char *packet, int pktlen, tcpr_dir_t dir)
         tcpedit_seterr(ctx->tcpedit, "%s", "Encoders only support C2S or C2S!");
         return TCPEDIT_ERROR;
     }
- 
-    
+
+
     return pktlen; /* success */
 }
 
 /*
  * Function returns the Layer 3 protocol type of the given packet, or TCPEDIT_ERROR on error
  */
-int 
+int
 dlt_user_proto(tcpeditdlt_t *ctx, const u_char *packet, const int _U_ pktlen)
 {
     assert(ctx);
@@ -279,7 +279,7 @@ dlt_user_proto(tcpeditdlt_t *ctx, const u_char *packet, const int _U_ pktlen)
 
     /* calling this for DLT_USER0 is broken */
     tcpedit_seterr(ctx->tcpedit, "%s", "Nonsensical calling of dlt_user_proto()");
-    return TCPEDIT_ERROR; 
+    return TCPEDIT_ERROR;
 }
 
 /*
@@ -314,16 +314,16 @@ dlt_user_merge_layer3(tcpeditdlt_t *ctx, u_char *packet, const int pktlen, u_cha
     assert(ctx);
     assert(packet);
     assert(l3data);
-    
+
     /* FIXME: Is there anything else we need to do?? */
     l2len = dlt_user_l2len(ctx, packet, pktlen);
     if (l2len == TCPEDIT_ERROR || pktlen < l2len)
         return NULL;
-    
+
     return tcpedit_dlt_l3data_merge(ctx, packet, pktlen, l3data, l2len);
 }
 
-/* 
+/*
  * return the length of the L2 header of the current packet
  */
 int
@@ -348,7 +348,7 @@ dlt_user_l2len(tcpeditdlt_t *ctx, const u_char *packet, const int _U_ pktlen)
 /*
  * return a static pointer to the source/destination MAC address
  * return NULL on error/address doesn't exist
- */    
+ */
 u_char *
 dlt_user_get_mac(tcpeditdlt_t *ctx, _U_ tcpeditdlt_mac_type_t mac,
         const u_char *packet, const int _U_ pktlen)
@@ -360,7 +360,7 @@ dlt_user_get_mac(tcpeditdlt_t *ctx, _U_ tcpeditdlt_mac_type_t mac,
     return(NULL);
 }
 
-tcpeditdlt_l2addr_type_t 
+tcpeditdlt_l2addr_type_t
 dlt_user_l2addr_type(void)
 {
     return NONE;
@@ -379,7 +379,7 @@ dlt_user_get_output_dlt(tcpeditdlt_t *ctx)
 
     plugin = tcpedit_dlt_getplugin(ctx, dlt_value);
     config = plugin->config;
-    return config->dlt;    
+    return config->dlt;
 }
 
 

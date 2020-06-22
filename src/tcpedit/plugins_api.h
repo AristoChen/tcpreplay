@@ -31,9 +31,9 @@ extern "C" {
 int tcpedit_dlt_post_args(tcpedit_t *tcpedit);
 
 
-/* 
+/*
  * initialize the DLT plugin backend, and return a new context var.
- * call this once per pcap to be processed 
+ * call this once per pcap to be processed
  */
 tcpeditdlt_t *tcpedit_dlt_init(tcpedit_t *tcpedit, int srcdlt);
 

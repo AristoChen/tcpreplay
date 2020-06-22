@@ -49,7 +49,7 @@ new_list()
 
 /**
  * Processes a string (ourstr) containing the list in human readable
- * format and places the data in **list and finally returns 1 for 
+ * format and places the data in **list and finally returns 1 for
  * success, 0 for fail.
  */
 int

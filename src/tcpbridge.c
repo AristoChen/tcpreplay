@@ -20,7 +20,7 @@
 
 /*
  * Purpose: Modify packets in a pcap file based on rules provided by the
- * user to offload work from tcpreplay and provide a easier means of 
+ * user to offload work from tcpreplay and provide a easier means of
  * reproducing traffic for testing purposes.
  */
 
@@ -57,7 +57,7 @@ tcpedit_t *tcpedit;
 void init(void);
 void post_args(int argc, char *argv[]);
 
-int 
+int
 main(int argc, char *argv[])
 {
     int optct, rcode;
@@ -118,7 +118,7 @@ main(int argc, char *argv[])
     return 0;
 }
 
-void 
+void
 init(void)
 {
 
@@ -135,7 +135,7 @@ init(void)
 }
 
 
-void 
+void
 post_args(_U_ int argc, _U_ char *argv[])
 {
     char ebuf[SENDPACKET_ERRBUF_SIZE];
@@ -203,9 +203,9 @@ post_args(_U_ int argc, _U_ char *argv[])
         } while (--ct > 0);
     }
 
-    /* 
+    /*
      * Figure out MAC addresses of sending interface(s)
-     * if user doesn't specify MAC address on CLI, query for it 
+     * if user doesn't specify MAC address on CLI, query for it
      */
     if (memcmp(options.intf1_mac, "\00\00\00\00\00\00", ETHER_ADDR_LEN) == 0) {
         if ((sp = sendpacket_open(options.intf1, ebuf, TCPR_DIR_C2S, SP_TYPE_NONE, NULL)) == NULL)
@@ -233,10 +233,10 @@ post_args(_U_ int argc, _U_ char *argv[])
         sendpacket_close(sp);
     }
 
-    /* 
-     * Open interfaces for sending & receiving 
+    /*
+     * Open interfaces for sending & receiving
      */
-    if ((options.pcap1 = pcap_open_live(options.intf1, options.snaplen, 
+    if ((options.pcap1 = pcap_open_live(options.intf1, options.snaplen,
                                           options.promisc, options.to_ms, ebuf)) == NULL)
         errx(-1, "Unable to open interface %s: %s", options.intf1, ebuf);
 

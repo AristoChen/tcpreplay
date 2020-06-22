@@ -29,7 +29,7 @@
 /* Miscellaneous timeval routines */
 
 /**
- * Divide tvp by div, storing the result in tvp 
+ * Divide tvp by div, storing the result in tvp
  */
 void
 timerdiv_float(struct timeval *tvp, float div)
@@ -75,10 +75,10 @@ timerdiv(struct timeval *tvp, COUNTER div)
 void timesdiv(struct timespec *tvs, COUNTER div)
 {
     uint64_t interval;
-    
+
     if (div == 0 || div == 1)
         return;
-        
+
     interval = (uint64_t)tvs->tv_sec * 1000000000 + tvs->tv_nsec;
     do_div(interval, div);
     tvs->tv_sec = interval / 1000000000;

@@ -51,7 +51,7 @@ typedef enum {
 typedef enum {
     TCPEDIT_EDIT_BOTH       = 0,
     TCPEDIT_EDIT_C2S,
-    TCPEDIT_EDIT_S2C 
+    TCPEDIT_EDIT_S2C
 } tcpedit_direction;
 
 typedef enum {
@@ -69,7 +69,7 @@ typedef struct {
     int dlt2;
     char errstr[TCPEDIT_ERRSTR_LEN];
     char warnstr[TCPEDIT_ERRSTR_LEN];
-#ifdef FORCE_ALIGN    
+#ifdef FORCE_ALIGN
     u_char *l3buff;
 #endif
 } tcpedit_runtime_t;
@@ -106,10 +106,10 @@ typedef struct {
     bool validated;  /* have we run tcpedit_validate()? */
     struct tcpeditdlt_s *dlt_ctx;
     tcpedit_packet_t *packet;
-    
+
     /* runtime variables, don't mess with these */
     tcpedit_runtime_t runtime;
-    
+
     /* skip rewriting IP/MAC's which are broadcast or multicast? */
     bool skip_broadcast;
 
@@ -123,7 +123,7 @@ typedef struct {
     /* rewrite TCP seq/ack numbers? */
     u_int32_t tcp_sequence_enable;
     u_int32_t tcp_sequence_adjust;
-    
+
     /* fix IP/TCP/UDP checksums */
     bool fixcsum;
 
@@ -135,27 +135,27 @@ typedef struct {
 
     /* TOS/DiffServ/ECN, -1 is disabled, else copy value */
     int tos;
-    
+
     /* IPv6 FlowLabel, -1 is disabled, else copy value */
     int flowlabel;
-    
+
     /* IPv6 TClass, -1 is disabled, else copy value */
     int tclass;
-    
+
     /* rewrite end-point IP addresses between cidrmap1 & cidrmap2 */
     tcpr_cidrmap_t *cidrmap1;       /* tcpprep cache data */
     tcpr_cidrmap_t *cidrmap2;
-    
+
     /* src & dst IP mapping */
     tcpr_cidrmap_t *srcipmap;
     tcpr_cidrmap_t *dstipmap;
-    
+
     /* pseudo-randomize IP addresses using a seed */
     uint32_t seed;
-    
+
     /* rewrite tcp/udp ports */
     tcpedit_portmap_t *portmap;
-    
+
     int mtu;                /* Deal with different MTU's */
     bool mtu_truncate;       /* Should we truncate frames > MTU? */
     int maxpacket;          /* L2 header + MTU */

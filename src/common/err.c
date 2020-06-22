@@ -76,12 +76,12 @@ notice(const char *fmt, ...)
 /**
  * Inner call to dbgx() which prints the function, line & function along
  * with the message to stderr.  Always forces a newline.
- * 
+ *
  * You don't actually want to call this!  use dbgx() instead!
  */
 #ifdef DEBUG
 void
-_our_verbose_dbgx(int dbg_level, const char *fmt, const char *function, 
+_our_verbose_dbgx(int dbg_level, const char *fmt, const char *function,
         const int line, const char *file, ...)
 {
     va_list ap;
@@ -89,7 +89,7 @@ _our_verbose_dbgx(int dbg_level, const char *fmt, const char *function,
     if (debug < dbg_level)
         return;
 
-    fprintf(stderr, "DEBUG%d in %s:%s() line %d: ", dbg_level, file, 
+    fprintf(stderr, "DEBUG%d in %s:%s() line %d: ", dbg_level, file,
             function, line);
 
     va_start(ap, file);
@@ -139,7 +139,7 @@ _our_verbose_errx(int eval, const char *fmt, ...) {
 void
 _our_verbose_warnx(const char *fmt, const char *function, const int line, const char *file, ...) {
 #else
-void 
+void
 _our_verbose_warnx(const char *fmt, ...) {
 #endif
 

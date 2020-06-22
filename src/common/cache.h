@@ -30,7 +30,7 @@
 #define SEND 1
 #define DONT_SEND 0
 
-/* 
+/*
  * CACHEVERSION History:
  * 01 - Initial release.  1 bit of data/packet (primary or secondary nic)
  * 02 - 2 bits of data/packet (drop/send & primary or secondary nic)
@@ -55,7 +55,7 @@ typedef struct tcpr_cache_s tcpr_cache_t;
 /*
  * cache_file_header Data structure defining a file as a tcpprep cache file
  * and it's version
- * 
+ *
  * If you need to enhance this struct, do so AFTER the version field and be sure
  * to increment  CACHEVERSION
  */
@@ -86,9 +86,9 @@ tcpr_dir_t add_cache(tcpr_cache_t **, const int, const tcpr_dir_t);
 COUNTER read_cache(char **, const char *, char **);
 tcpr_dir_t check_cache(char *, COUNTER);
 
-/* return values for check_cache 
+/* return values for check_cache
 #define CACHE_ERROR -1
-#define CACHE_NOSEND 0  // NULL 
+#define CACHE_NOSEND 0  // NULL
 #define CACHE_PRIMARY 1
 #define CACHE_SECONDARY 2
 */

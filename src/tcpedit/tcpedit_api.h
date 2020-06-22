@@ -35,7 +35,7 @@ int tcpedit_set_encoder_dltplugin_byname(tcpedit_t *, const char *);
 
 
 /**
- * setters always return TCPEDIT_OK on success or TCPEDIT_ERROR 
+ * setters always return TCPEDIT_OK on success or TCPEDIT_ERROR
  * if there is a problem.  You can use tcpedit_geterr() to get the reason
  * for the failure
  */

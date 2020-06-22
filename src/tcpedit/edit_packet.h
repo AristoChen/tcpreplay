@@ -24,16 +24,16 @@
 #include "tcpedit.h"
 #include "common.h"
 
-int untrunc_packet(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr, 
+int untrunc_packet(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr,
         u_char **pktdata, ipv4_hdr_t *ip_hdr, ipv6_hdr_t *ip6_hdr);
 
-int randomize_ipv4(tcpedit_t *tcpedit, struct pcap_pkthdr *pktdhr, 
+int randomize_ipv4(tcpedit_t *tcpedit, struct pcap_pkthdr *pktdhr,
         u_char *pktdata, ipv4_hdr_t *ip_hdr, const int l3len);
 
 int randomize_ipv6(tcpedit_t *tcpedit, struct pcap_pkthdr *pktdhr,
         u_char *pktdata, ipv6_hdr_t *ip_hdr, const int l3len);
 
-int randomize_iparp(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr, 
+int randomize_iparp(tcpedit_t *tcpedit, struct pcap_pkthdr *pkthdr,
         u_char *pktdata, int datalink, const int l3len);
 
 int fix_ipv4_checksums(tcpedit_t *tcpedit, struct pcap_pkthdr *pkdhdr,
@@ -46,7 +46,7 @@ void fix_ipv4_length(struct pcap_pkthdr *pkthdr, ipv4_hdr_t *ip_hdr);
 
 void fix_ipv6_length(struct pcap_pkthdr *pkthdr, ipv6_hdr_t *ip6_hdr);
 
-int extract_data(tcpedit_t *tcpedit, const u_char *pktdata, 
+int extract_data(tcpedit_t *tcpedit, const u_char *pktdata,
         int caplen, char *l7data[]);
 
 int rewrite_ipv4l3(tcpedit_t *tcpedit, ipv4_hdr_t *ip_hdr, tcpr_dir_t direction,

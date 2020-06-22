@@ -83,7 +83,7 @@ typedef struct tcpdump_s {
     int pipes[NUM_PIPES][2];
 
     /* following vars are for figuring out exactly what we send to
-     * tcpdump.  See TCPDUMP_DEBUG 
+     * tcpdump.  See TCPDUMP_DEBUG
      */
 #ifdef DEBUG
     int debugfd;

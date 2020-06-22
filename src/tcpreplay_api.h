@@ -207,12 +207,12 @@ typedef struct tcpreplay_s {
 /*
  * manual callback definition:
  * ctx              = tcpreplay context
- * interface        = name of interface current packet will be sent out 
- * current_packet   = packet number to be sent out 
+ * interface        = name of interface current packet will be sent out
+ * current_packet   = packet number to be sent out
  *
  * Returns number of packets to send.  0 == send all remaining packets
- * Note: Your callback method is BLOCKING the main tcpreplay loop.  If you 
- * call tcpreplay_abort() from inside of your callback, you still need to 
+ * Note: Your callback method is BLOCKING the main tcpreplay loop.  If you
+ * call tcpreplay_abort() from inside of your callback, you still need to
  * return (any value) so that the main loop is released and can abort.
  */
 typedef u_int32_t(*tcpreplay_manual_callback) (tcpreplay_t *ctx, char *interface, COUNTER current_packet);

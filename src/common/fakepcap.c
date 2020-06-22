@@ -21,7 +21,7 @@
 /*
  * This file implements missing libpcap functions which only exist in really
  * recent versions of libpcap.  We assume the user has at least 0.6, so anything
- * after that needs to be re-implimented here unless we want to start 
+ * after that needs to be re-implimented here unless we want to start
  * requiring a newer version
  */
 
@@ -56,9 +56,9 @@ pcap_datalink_val_to_name(int dlt)
 {
     if (dlt > DLT2NAME_LEN)
         return "Unknown";
-        
+
     return dlt2name[dlt];
-    
+
 }
 
 #endif

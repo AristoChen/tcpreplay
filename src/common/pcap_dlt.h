@@ -22,7 +22,7 @@
 #define _PCAP_DLT_H_
 
 /*
- * Cisco HDLC.  Used by Dag interfaces for SONET 
+ * Cisco HDLC.  Used by Dag interfaces for SONET
  * and possibly others
  */
 

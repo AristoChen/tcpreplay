@@ -120,7 +120,7 @@ dltrequires(tcpedit_t *tcpedit, int dlt)
  * returns the default MTU size for the given DLT type.  Returns -1
  * for invalid DLT
  */
-int 
+int
 dlt2mtu(tcpedit_t *tcpedit, int dlt)
 {
     int mtu;
@@ -154,7 +154,7 @@ dlt2mtu(tcpedit_t *tcpedit, int dlt)
 }
 
 /**
- * Returns the current layer 2 len based on the 
+ * Returns the current layer 2 len based on the
  * DLT of the pcap or the --dlink value or -1 on error.
  * You need to call this function AFTER rewriting the layer 2 header
  * for it to be at all useful.
@@ -163,7 +163,7 @@ int
 layer2len(tcpedit_t *tcpedit)
 {
    assert(tcpedit);
-   
+
    return tcpedit->dlt_ctx->l2len;
 }
 
